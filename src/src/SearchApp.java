@@ -3,6 +3,8 @@ import imageprocess.ImageProcessor;
 import java.io.IOException;
 import java.util.Vector;
 
+import som.ImageSom;
+
 import net.sf.javaml.core.Dataset;
 
 import com.machinelearning.Utility;
