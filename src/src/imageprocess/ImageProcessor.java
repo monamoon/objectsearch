@@ -238,18 +238,14 @@ public class ImageProcessor {
 		bufferedImage.createGraphics().drawImage(scaledImage,0,0,null);
 		return bufferedImage;
 	}
-	public BufferedImage getSegmentedImage(BufferedImage bi)
+	public BufferedImage getSegmentedImage(BufferedImage bi) throws IOException
 	{
-		PlanarImage planarImage = PlanarImage.wrapRenderedImage(bi);
-	    SimpleRegionGrowing imageSegmenter = new SimpleRegionGrowing(planarImage,false);
-		imageSegmenter.start();
-		while(!imageSegmenter.isFinished());
-	    
-	    //return imageSegmenter.getInternalImage().getAsBufferedImage();
-		//imageSegmenter.run();
-		return imageSegmenter.getOutput().getAsBufferedImage();
-		//return bi;
-		
+		SRM srm = new SRM();
+		srm.processImage(bi);
+		Image segImage = srm.getImgseg();
+		BufferedImage bufferedImage = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
+		bufferedImage.createGraphics().drawImage(segImage,0,0,null);
+		return bufferedImage;
 	}
 	public void constructDataset(BufferedImage bi, String fileName)
 	{
@@ -286,21 +282,21 @@ public class ImageProcessor {
 	public Vector<Double> getData(String filePath, double label) throws IOException
 	{
 		BufferedImage fileBuff = ImageIO.read(new File(filePath));
-		
+	
 		BufferedImage segmentBuff = getSegmentedImage(fileBuff);
-		ImageIO.write(segmentBuff, "jpg",new File(filePath+"_segmented.jpg"));
+		ImageIO.write(segmentBuff, "jpg",new File(filePath+"_segments.jpg"));
 		
 		BufferedImage normalBuff = getScaledImage(segmentBuff,normalWidth,normalHeight);
-		ImageIO.write(normalBuff, "jpg",new File(filePath+"0.jpg"));
+		ImageIO.write(normalBuff, "jpg",new File(filePath+"_0.jpg"));
 		
-		BufferedImage edgeBuff = sobelEdgeDetection(normalBuff);
-		ImageIO.write(edgeBuff, "jpg",new File(filePath+"1.jpg"));
+		BufferedImage edgeBuff = sobelEdgeDetection2(normalBuff);
+		ImageIO.write(edgeBuff, "jpg",new File(filePath+"_1.jpg"));
 		
 		BufferedImage scaledBuff = getScaledImage(edgeBuff,width,height);
-		ImageIO.write(scaledBuff, "jpg",new File(filePath+"2.jpg"));
+		ImageIO.write(scaledBuff, "jpg",new File(filePath+"_2.jpg"));
 		
 		BufferedImage monoBuff = getMonoChromeImage(scaledBuff, threshold);
-		ImageIO.write(monoBuff, "jpg",new File(filePath+"3.jpg"));
+		ImageIO.write(monoBuff, "jpg",new File(filePath+"_3.jpg"));
 		
 		return null;
 		
@@ -323,9 +319,9 @@ public class ImageProcessor {
 	 *
 	 */
 
-	BufferedImage sobelEdgeDetection(BufferedImage bi) 
+	BufferedImage sobelEdgeDetection2(BufferedImage img) 
 	{
-		/*
+		
 		BufferedImage edged = new BufferedImage(img.getWidth(),img.getHeight(),
 				BufferedImage.TYPE_INT_RGB);
 
@@ -367,11 +363,7 @@ public class ImageProcessor {
 		int halfWidth = kernWidth/2;
 		int halfHeight = kernHeight/2;
 
-		/*this algorithm pretends as though the kernel is indexed from -halfWidth 
-		 *to halfWidth horizontally and -halfHeight to halfHeight vertically.  
-		 *This makes the center pixel indexed at row 0, column 0.*/
-
-		/*for(int component = 0; component < 3; component++) {
+		for(int component = 0; component < 3; component++) {
 			float sum = 0;
 			for(int i = 0; i < kernel.length; i++) {
 				int row = (i/kernWidth)-halfWidth;  //current row in kernel
@@ -386,7 +378,12 @@ public class ImageProcessor {
 			}
 			rgb[component] = (int) sum;
 		}
-		*/
+		return rgb;
+	}
+	BufferedImage sobelEdgeDetection(BufferedImage bi) 
+	{
+	
+		
 		 // Create a constant array with the Sobel horizontal kernel.
 	    float[] kernelMatrix = { -1, -2, -1,
 	                              0,  0,  0,

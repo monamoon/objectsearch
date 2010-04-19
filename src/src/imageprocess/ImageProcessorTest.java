@@ -7,6 +7,6 @@ public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException {
 		String filePath = "cars\\";
 		ImageProcessor ip = new ImageProcessor();
-		ip.getData(filePath+"car1.jpg", 1);
+		ip.getData(filePath+"car9.jpg", 1);
 	}
 }
