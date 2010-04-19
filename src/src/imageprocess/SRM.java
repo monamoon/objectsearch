@@ -1,34 +1,16 @@
 package imageprocess;
 import java.awt.*;
 import java.applet.*;
-import java.awt.event.*;
 import java.awt.image.*;
-import java.util.StringTokenizer;
 import java.io.File;
 import java.io.IOException;
-import java.net.*;
 
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
 
 public class SRM {
 
-	/*
-Statistical Region Merging in Java: SRMj
-
-by Frank Nielsen and Richard Nock 
-
-	 ***Caution: This is the simplest implementation***
-Java Applet, May 2006.
-
-(Version 1.0 : 6 May 2006) 
-
-For more, check:
-Richard Nock, Frank Nielsen: Statistical Region Merging. IEEE Trans. Pattern Anal. Mach. Intell. 26(11): 1452-1458 (2004)
-
-Find more in the "Visual Computing: Geometry, Graphics, and Vision" book:
-http://www.csl.sony.co.jp/person/nielsen/visualcomputing/
-	 */
+	
+	 
 
 
 	// Input image
@@ -38,11 +20,9 @@ http://www.csl.sony.co.jp/person/nielsen/visualcomputing/
 	// Ouput segmented image
 	Image imgseg;
 
-	// Input image (URL or not)  
-	String filenameimg;   
-	String filenameimgurl;
-
-	URL imgurl;
+	public Image getImgseg() {
+		return imgseg;
+	}
 
 
 	//
@@ -85,10 +65,9 @@ http://www.csl.sony.co.jp/person/nielsen/visualcomputing/
 		InitializeSegmentation();
 		FullSegmentation();
 
-		
 		ImageProducer ip = new MemoryImageSource(
 				pg.getWidth() , pg.getHeight() , rastero , 0 , pg.getWidth());
-		this.imgseg= .createImage(ip);
+		this.imgseg = (new Canvas()).createImage(ip);
 	}
 
 
@@ -408,54 +387,41 @@ http://www.csl.sony.co.jp/person/nielsen/visualcomputing/
 			}
 	}
 
-	
-	public void processImage(String fileName) throws IOException {
-		img = ImageIO.read(new File(fileName));
-	
-	g=256.0; 
-	borderthickness=0; // border thickness of regions
 
-	//
-	// Require a valid image for proceeding
-	//
-	if (img!=null)
-	{
-		pg = new PixelGrabber(img, 0 , 0 , -1 , -1 , true);
-		try { pg.grabPixels(); }
-		catch (InterruptedException e) { }
+	public void processImage(BufferedImage bi) throws IOException {
+		img = bi;
 
-		raster= (int[])pg.getPixels();
+		g=256.0; 
+		borderthickness=0; // border thickness of regions
 
-		w=pg.getWidth();
-		h=pg.getHeight();
-		aspectratio=(double)h/(double)w;
-		n=w*h;
-		logdelta = 2.0*Math.log(6.0*n);
-		// small regions are less than 0.1% of image pixels
-		smallregion=(int)(0.001*n); 
+		//
+		// Require a valid image for proceeding
+		//
+		if (img!=null)
+		{
+			pg = new PixelGrabber(img, 0 , 0 , -1 , -1 , true);
+			try { pg.grabPixels(); }
+			catch (InterruptedException e) { }
 
-		// One round of segmentation
-		OneRound();
+			raster= (int[])pg.getPixels();
 
-	} // End of applet initialization
+			w=pg.getWidth();
+			h=pg.getHeight();
+			aspectratio=(double)h/(double)w;
+			n=w*h;
+			logdelta = 2.0*Math.log(6.0*n);
+			// small regions are less than 0.1% of image pixels
+			smallregion=(int)(0.001*n); 
 
+			// One round of segmentation
+			OneRound();
 
+		}
 
-};
+	};
 
-//
-//The applet control panel
-//
-	// Slider for Q
-
-
-
-	// Get the choice item events here
-	public void itemStateChanged(ItemEvent e) {
-	}
 
 }
-
 
 //
 //Canvas part for drawing the image and the segmented image.
