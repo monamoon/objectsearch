@@ -199,6 +199,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Vector;
 
 import javax.imageio.*;
 import javax.media.jai.JAI;
@@ -282,7 +283,7 @@ public class ImageProcessor {
 		
 		
 	}
-	public void getData(String filePath, double label) throws IOException
+	public Vector<Double> getData(String filePath, double label) throws IOException
 	{
 		BufferedImage fileBuff = ImageIO.read(new File(filePath));
 		
@@ -301,7 +302,7 @@ public class ImageProcessor {
 		BufferedImage monoBuff = getMonoChromeImage(scaledBuff, threshold);
 		ImageIO.write(monoBuff, "jpg",new File(filePath+"3.jpg"));
 		
-		constructDataset(monoBuff, "dataset.txt");
+		return null;
 		
 		
 			
