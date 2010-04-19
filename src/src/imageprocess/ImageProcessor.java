@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.*;
 import javax.imageio.*;
 
-import com.machinelearning.Utility;
-
 public class ImageProcessor {
 	
 	private Vector<Double> dataFile;

@@ -1,13 +1,9 @@
 import imageprocess.ImageProcessor;
-
 import java.io.IOException;
 import java.util.Vector;
-
+import net.sf.javaml.core.Dataset;
 import som.ImageSom;
 
-import net.sf.javaml.core.Dataset;
-
-import com.machinelearning.Utility;
 
 
 public class SearchApp {
