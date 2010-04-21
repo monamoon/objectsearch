@@ -298,8 +298,25 @@ public class ImageProcessor {
 		BufferedImage monoBuff = getMonoChromeImage(scaledBuff, threshold);
 		ImageIO.write(monoBuff, "jpg",new File(filePath+"_3.jpg"));
 		
-		return null;
-		
+//
+		Vector<Double> dataFile = new Vector<Double>();
+	    for(int i=monoBuff.getMinX();i<monoBuff.getWidth();i++)
+		{
+	    	
+			for(int j=monoBuff.getMinY();j<monoBuff.getHeight();j++){
+				Color c = new Color(monoBuff.getRGB(i, j));
+				if(c.getBlue() != 0)
+					dataFile.add(1.0); 
+				else
+					dataFile.add(0.0);
+ //               System.out.println(c);
+			}			
+		}
+
+	    //Add class label
+	    dataFile.add(label);
+//	    System.out.println("size: "+dataFile.size());
+	    return dataFile;
 		
 			
 	}
