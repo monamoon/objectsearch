@@ -206,13 +206,14 @@ import javax.media.jai.JAI;
 import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
 
+
 public class ImageProcessor {
 	
-	int width = 100;
-	int height = 80;
-	int normalWidth = 1000;
-	int normalHeight = 800;
-	double threshold = 0.35;
+	int width = ImageProcessingConstants.inputWidth;
+	int height = ImageProcessingConstants.inputHeight;
+	int normalWidth = ImageProcessingConstants.scaleWidth;
+	int normalHeight = ImageProcessingConstants.scaleHeight;
+	double threshold = ImageProcessingConstants.monoChromeThreshold;
 	
 	public BufferedImage getMonoChromeImage(BufferedImage bi, double threshold)
 	{
@@ -237,6 +238,42 @@ public class ImageProcessor {
 		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		bufferedImage.createGraphics().drawImage(scaledImage,0,0,null);
 		return bufferedImage;
+	}
+	public Vector<BufferedImage> getSegments(BufferedImage bi) throws IOException
+	{
+		Vector<Segment> segments = new Vector<Segment>();
+		BufferedImage normalBuff = getScaledImage(bi,normalWidth,normalHeight);
+		BufferedImage buff = getSegmentedImage(normalBuff);
+		for(int i=buff.getMinX();i<buff.getWidth();i++)
+		{
+			for(int j=buff.getMinY();j<buff.getHeight();j++)
+			{
+				Color color = new Color(buff.getRGB(i, j));
+				int x;
+				for(x=0;x<segments.size();x++)
+					if(segments.elementAt(x).getColor().equals(color))
+						break;
+					
+				if(x==segments.size())
+				{
+					Segment curSegment = new Segment(color);
+					curSegment.setPixel(i, j);
+					segments.add(curSegment);
+				}
+				else
+				{
+					segments.elementAt(x).setPixel(i, j);
+				}
+			}	
+		}
+		Vector<BufferedImage> segmentBuff = new Vector<BufferedImage>();
+		for(int i=0;i<segments.size();i++)
+		{
+			Segment segment = segments.elementAt(i); 
+			if(segment.getCount()>ImageProcessingConstants.objectThreshold)
+				segmentBuff.add(segment.getImage());
+		}
+		return segmentBuff;
 	}
 	public BufferedImage getSegmentedImage(BufferedImage bi) throws IOException
 	{
@@ -279,32 +316,37 @@ public class ImageProcessor {
 		
 		
 	}
-	public Vector<Double> getData(String filePath, double label) throws IOException
+	public void writeImageFile(BufferedImage bi, String filePath) throws IOException
 	{
-		BufferedImage fileBuff = ImageIO.read(new File(filePath));
-	
-		BufferedImage segmentBuff = getSegmentedImage(fileBuff);
-		ImageIO.write(segmentBuff, "jpg",new File(filePath+"_segments.jpg"));
-		
-		BufferedImage normalBuff = getScaledImage(segmentBuff,normalWidth,normalHeight);
-		ImageIO.write(normalBuff, "jpg",new File(filePath+"_0.jpg"));
-		
-		BufferedImage edgeBuff = sobelEdgeDetection2(normalBuff);
-		ImageIO.write(edgeBuff, "jpg",new File(filePath+"_1.jpg"));
+		ImageIO.write(bi,"jpg",new File(filePath));
+	}
+	public BufferedImage readImageFile(String filePath) throws IOException
+	{
+		return ImageIO.read(new File(filePath));
+	}
+	public BufferedImage processSegment(BufferedImage bi) throws IOException 
+	{
+		BufferedImage edgeBuff = sobelEdgeDetection2(bi);
+//		ImageIO.write(edgeBuff, "jpg",new File(filePath+"_1.jpg"));
 		
 		BufferedImage scaledBuff = getScaledImage(edgeBuff,width,height);
-		ImageIO.write(scaledBuff, "jpg",new File(filePath+"_2.jpg"));
+//		ImageIO.write(scaledBuff, "jpg",new File(filePath+"_2.jpg"));
 		
 		BufferedImage monoBuff = getMonoChromeImage(scaledBuff, threshold);
-		ImageIO.write(monoBuff, "jpg",new File(filePath+"_3.jpg"));
+//		ImageIO.write(monoBuff, "jpg",new File(filePath+"_3.jpg"));
 		
-//
+		return monoBuff;
+	}
+	
+	
+	public Vector<Double> getData(BufferedImage bi, double label) 
+	{
 		Vector<Double> dataFile = new Vector<Double>();
-	    for(int i=monoBuff.getMinX();i<monoBuff.getWidth();i++)
+	    for(int i=bi.getMinX();i<bi.getWidth();i++)
 		{
 	    	
-			for(int j=monoBuff.getMinY();j<monoBuff.getHeight();j++){
-				Color c = new Color(monoBuff.getRGB(i, j));
+			for(int j=bi.getMinY();j<bi.getHeight();j++){
+				Color c = new Color(bi.getRGB(i, j));
 				if(c.getBlue() != 0)
 					dataFile.add(1.0); 
 				else
@@ -317,8 +359,6 @@ public class ImageProcessor {
 	    dataFile.add(label);
 //	    System.out.println("size: "+dataFile.size());
 	    return dataFile;
-		
-			
 	}
 	/* Sobel.js
 	 * Kas Thomas
