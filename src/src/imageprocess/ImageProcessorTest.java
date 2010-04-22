@@ -12,15 +12,17 @@ public class ImageProcessorTest {
 		Vector<Vector<Double>> data = new Vector<Vector<Double>>();
 		String filePath = "cars\\";
 		ImageProcessor ip = new ImageProcessor();
-		
+		int k=0;
 		for(int i=1; i<=14; i++)
 		{
 			BufferedImage readImage = ip.readImageFile(filePath+"car" + i + ".jpg");
 			Vector<BufferedImage> segments = ip.getSegments(readImage);
+			
 			for(int j=0;j<segments.size();j++)
 			{
 				BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
-				data.add(ip.getData(processedBuff, Double.parseDouble(i+"."+j)));	
+				ip.writeImageFile(processedBuff, filePath+"components/object_"+i+"_"+j+".jpg");
+				data.add(ip.getData(processedBuff, k));	
 			}
 			System.out.println("Done processing "+filePath+"car" + i + ".jpg");
 		}
