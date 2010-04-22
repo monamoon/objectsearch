@@ -14,7 +14,7 @@ public class SearchApp {
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		Vector<Vector<Double>> data = new Vector<Vector<Double>>();
+/*		Vector<Vector<Double>> data = new Vector<Vector<Double>>();
 		String filePath = "cars\\";
 		ImageProcessor ip = new ImageProcessor();
 		for(int i=1; i<11; i++)
@@ -34,6 +34,7 @@ public class SearchApp {
 			for(int j=0; j<curr.size(); j++)
 				System.out.println(curr.get(j).classValue());
 		}
+*/
 	}
 
 }
