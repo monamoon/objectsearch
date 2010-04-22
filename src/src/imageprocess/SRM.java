@@ -9,11 +9,7 @@ import javax.imageio.ImageIO;
 
 public class SRM {
 
-	
-	 
-
-
-	// Input image
+		// Input image
 	Image img;
 	PixelGrabber pg;
 
@@ -33,7 +29,7 @@ public class SRM {
 	int w,h,n;
 	double aspectratio;
 
-	double Q=32.0;
+	double Q=	5.0;
 	UnionFind UF;
 	double g; // number of levels in a color channel
 	double logdelta;
