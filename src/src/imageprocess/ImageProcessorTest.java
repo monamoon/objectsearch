@@ -1,5 +1,6 @@
 package imageprocess;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Vector;
 
@@ -12,12 +13,19 @@ public class ImageProcessorTest {
 		String filePath = "cars\\";
 		ImageProcessor ip = new ImageProcessor();
 		
-		for(int i=1; i<11; i++)
-			data.add(ip.getData((filePath+"car" + i + ".jpg"), i));
-		for(int i=11; i<15; i++){
-			data.add(ip.getData((filePath+"car" + i + ".jpg"), i));
+		for(int i=1; i<=14; i++)
+		{
+			BufferedImage readImage = ip.readImageFile(filePath+"car" + i + ".jpg");
+			Vector<BufferedImage> segments = ip.getSegments(readImage);
+			for(int j=0;j<segments.size();j++)
+			{
+				BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
+				data.add(ip.getData(processedBuff, Double.parseDouble(i+"."+j)));	
+			}
+			System.out.println("Done processing "+filePath+"car" + i + ".jpg");
 		}
-		System.out.println("Output size: "+data.size());
+			
+	    System.out.println("Output size: "+data.size());
 		ImageSom som = new ImageSom(data);
 		Dataset[] datasom = som.cluster();
 	
@@ -27,5 +35,6 @@ public class ImageProcessorTest {
 			for(int j=0; j<curr.size(); j++)
 				System.out.println(curr.get(j).classValue());
 		}
+
 	}
 }
