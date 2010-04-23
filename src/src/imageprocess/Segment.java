@@ -19,10 +19,13 @@ public class Segment {
 	}
 	Segment(Color c)
 	{
+		Color bg = Color.BLACK;
+		if(c.equals(bg))
+			bg = Color.WHITE;
 		bi = new BufferedImage(ImageProcessingConstants.scaleWidth, ImageProcessingConstants.scaleHeight, BufferedImage.TYPE_INT_RGB);
 		for(int i=0;i<bi.getWidth();i++)
 			for(int j=0;j<bi.getHeight();j++)
-				bi.setRGB(i, j, Color.BLACK.getRGB());
+				bi.setRGB(i, j, bg.getRGB());
 		count = 0;
 		color = c;
 	}
