@@ -12,7 +12,7 @@ public class ImageProcessorTest {
 		Vector<Vector<Double>> data = new Vector<Vector<Double>>();
 		String filePath = "cars\\";
 		ImageProcessor ip = new ImageProcessor();
-		int k=0;
+		double k=0;
 		for(int i=1; i<=14; i++)
 		{
 			BufferedImage readImage = ip.readImageFile(filePath+"car" + i + ".jpg");
@@ -22,7 +22,8 @@ public class ImageProcessorTest {
 			{
 				BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
 				ip.writeImageFile(processedBuff, filePath+"components/object_"+i+"_"+j+".jpg");
-				data.add(ip.getData(processedBuff, ++k));	
+				k=k+1;
+				data.add(ip.getData(processedBuff, k));	
 			}
 			System.out.println("Done processing "+filePath+"car" + i + ".jpg");
 		}
