@@ -13,7 +13,7 @@ public class ImageProcessorTest {
 		String filePath = "cars\\";
 		ImageProcessor ip = new ImageProcessor();
 		double k=0;
-		for(int i=1; i<=1; i++)
+		for(int i=1; i<=15; i++)
 		{
 			BufferedImage readImage = ip.readImageFile(filePath+"car" + i + ".jpg");
 			Vector<BufferedImage> segments = ip.getSegments(readImage);
