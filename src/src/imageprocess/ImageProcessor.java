@@ -10,36 +10,36 @@ import java.util.*;
 import javax.imageio.*;
 
 public class ImageProcessor {
-	
+
 	private Vector<Double> dataFile;
 	private int width = 100;
 	private int height = 80;
-	
+
 	public ImageProcessor(){
 		setDataFile(new Vector<Double>());
 	}
-	
+
 	public Vector<Double> getData(String filePath, double label) throws IOException
 	{
-		
+
 		BufferedImage image = ImageIO.read(new File(filePath));
         BufferedImage edgeBuff = sobelEdgeDetection(image);
-        
+
         Image scaledImage =  edgeBuff.getScaledInstance(width, height, Image.SCALE_DEFAULT);
         BufferedImage scaledBuff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);  
         scaledBuff.createGraphics().drawImage(scaledImage,0,0,null);
-        
-        
+
+
 
 //        BufferedImage monoImage = new BufferedImage(scaledBuff.getWidth(), scaledBuff.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
 //        
 //        monoImage.createGraphics().drawImage(scaledBuff,0,0,null);
-        
 
-        
+
+
 	    for(int i=scaledBuff.getMinX();i<scaledBuff.getWidth();i++)
 		{
-	    	
+
 			for(int j=scaledBuff.getMinY();j<scaledBuff.getHeight();j++){
 				Color color = new Color(scaledBuff.getRGB(i, j));
                 double val = 0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue();
@@ -48,16 +48,16 @@ public class ImageProcessor {
                 else
                 	scaledBuff.setRGB(i, j, Color.WHITE.getRGB());
 			}
-			
+
 		}
-	    
+
 	    ImageIO.write(scaledBuff, "png",new File(filePath+".png"));
-	    
-		
+
+
 		Vector<Double> dataFile = new Vector<Double>();
 	    for(int i=scaledBuff.getMinX();i<scaledBuff.getWidth();i++)
 		{
-	    	
+
 			for(int j=scaledBuff.getMinY();j<scaledBuff.getHeight();j++){
 				Color c = new Color(scaledBuff.getRGB(i, j));
 				if(c.getBlue() != 0)
@@ -79,34 +79,34 @@ public class ImageProcessor {
 //	    		System.out.print(item);
 //	    	System.out.println();
 //	    }
-	    
+
 	    //Print to file
-	    
-	    
+
+
 		ByteArrayOutputStream bas = new ByteArrayOutputStream();
 		ImageIO.write(scaledBuff, "pnm", bas);
 		byte[] data = bas.toByteArray();
 //		System.out.println(data.length);
 	//	for (int i=0;i<data.length;i++)
 		//	System.out.println(data[i]);
-		
+
 		return dataFile;
 	}
 	 Sobel.js
-	 * Kas Thomas
-	 * 31 January 2010
-	 * Public domain.
-	 *
-	 * An edge-detection routine using
-	 * Java Advanced Imaging.
-	 *
-	 * Requires Java Advanced Imaging library:
-	 * http://java.sun.com/products/java-media/jai/current.html
-	 *
-	 * Run this file using ImageMunger:
-	 * http://asserttrue.blogspot.com/2010/01/simple-java-class-for-running-scripts.html
-	 *
-	 
+ * Kas Thomas
+ * 31 January 2010
+ * Public domain.
+ *
+ * An edge-detection routine using
+ * Java Advanced Imaging.
+ *
+ * Requires Java Advanced Imaging library:
+ * http://java.sun.com/products/java-media/jai/current.html
+ *
+ * Run this file using ImageMunger:
+ * http://asserttrue.blogspot.com/2010/01/simple-java-class-for-running-scripts.html
+ *
+
 
 	BufferedImage sobelEdgeDetection(BufferedImage img) 
 	{
@@ -152,8 +152,8 @@ public class ImageProcessor {
 		int halfHeight = kernHeight/2;
 
 		this algorithm pretends as though the kernel is indexed from -halfWidth 
-		 *to halfWidth horizontally and -halfHeight to halfHeight vertically.  
-		 *This makes the center pixel indexed at row 0, column 0.
+ *to halfWidth horizontally and -halfHeight to halfHeight vertically.  
+ *This makes the center pixel indexed at row 0, column 0.
 
 		for(int component = 0; component < 3; component++) {
 			float sum = 0;
@@ -182,7 +182,7 @@ public class ImageProcessor {
 	}
 
 }
-*/
+ */
 
 import java.awt.Graphics2D;
 
@@ -206,15 +206,92 @@ import javax.media.jai.JAI;
 import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
 
-
+class bgColor
+{
+	Color color;
+	public Color getColor() {
+		return color;
+	}
+	int count;
+	bgColor(Color c)
+	{
+		color = c;
+		count = 1;
+	}
+	public void addPixel()
+	{
+		count = count + 1;
+	}
+	public int getCount()
+	{
+		return count;
+	}
+};
 public class ImageProcessor {
-	
+
 	int width = ImageProcessingConstants.inputWidth;
 	int height = ImageProcessingConstants.inputHeight;
 	int normalWidth = ImageProcessingConstants.scaleWidth;
 	int normalHeight = ImageProcessingConstants.scaleHeight;
 	double threshold = ImageProcessingConstants.monoChromeThreshold;
-	
+	public BufferedImage removeBG(BufferedImage bi)
+	{
+		Vector<bgColor> bgcolors = new Vector<bgColor>();
+		
+		for(int i=0;i<normalWidth;i++)
+		{
+			Color c = new Color(bi.getRGB(i,0));
+			for(int x=0;x<bgcolors.size();x++)
+			{
+				if (c.equals(bgcolors.elementAt(x).getColor()))
+					bgcolors.elementAt(x).addPixel();
+				else
+					bgcolors.add(new bgColor(c));
+			}
+			c = new Color(bi.getRGB(i,normalHeight-1));
+			for(int x=0;x<bgcolors.size();x++)
+			{
+				if (c.equals(bgcolors.elementAt(x).getColor()))
+					bgcolors.elementAt(x).addPixel();
+				else
+					bgcolors.add(new bgColor(c));
+			}
+		}
+		for(int j=0;j<normalHeight;j++)
+		{
+			Color c = new Color(bi.getRGB(0,j));
+			for(int x=0;x<bgcolors.size();x++)
+			{
+				if (c.equals(bgcolors.elementAt(x).getColor()))
+					bgcolors.elementAt(x).addPixel();
+				else
+					bgcolors.add(new bgColor(c));
+			}
+			c = new Color(bi.getRGB(normalWidth-1,j));
+			for(int x=0;x<bgcolors.size();x++)
+			{
+				if (c.equals(bgcolors.elementAt(x).getColor()))
+					bgcolors.elementAt(x).addPixel();
+				else
+					bgcolors.add(new bgColor(c));
+			}
+		}
+		BufferedImage buff = bi;
+		for(int k=0;k<bgcolors.size();k++)
+		{
+			bgColor bgcolor = bgcolors.elementAt(k);
+			if(bgcolor.getCount()<ImageProcessingConstants.bgThreshold)
+				continue;
+			int rgbcolor = bgcolor.getColor().getRGB();
+			int rgbblack = Color.BLACK.getRGB();
+			for(int i=0;i<normalWidth;i++)
+				for(int j=0;j<normalHeight;j++)
+					if(buff.getRGB(i,j)==rgbcolor)
+						buff.setRGB(i, j, rgbblack);
+		}
+		return buff;
+	}
+
 	public BufferedImage getMonoChromeImage(BufferedImage bi, double threshold)
 	{
 		BufferedImage bufferedImage = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -243,7 +320,8 @@ public class ImageProcessor {
 	{
 		Vector<Segment> segments = new Vector<Segment>();
 		BufferedImage normalBuff = getScaledImage(bi,normalWidth,normalHeight);
-		BufferedImage buff = getSegmentedImage(normalBuff);
+		BufferedImage segmentImage = getSegmentedImage(normalBuff);
+		BufferedImage buff = removeBG(segmentImage);
 		for(int i=buff.getMinX();i<buff.getWidth();i++)
 		{
 			for(int j=buff.getMinY();j<buff.getHeight();j++)
@@ -253,7 +331,7 @@ public class ImageProcessor {
 				for(x=0;x<segments.size();x++)
 					if(segments.elementAt(x).getColor().equals(color))
 						break;
-					
+
 				if(x==segments.size())
 				{
 					Segment curSegment = new Segment(color);
@@ -270,7 +348,7 @@ public class ImageProcessor {
 		for(int i=0;i<segments.size();i++)
 		{
 			Segment segment = segments.elementAt(i); 
-			if(segment.getCount()>ImageProcessingConstants.objectThresholdLow && segment.getCount()<ImageProcessingConstants.objectThresholdHigh)
+			if(segment.getCount()>ImageProcessingConstants.objectThresholdLow && segment.getCount()<ImageProcessingConstants.objectThresholdHigh && !segment.isCorner)
 				segmentBuff.add(segment.getImage());
 		}
 		return segmentBuff;
@@ -287,79 +365,51 @@ public class ImageProcessor {
 	public void constructDataset(BufferedImage bi, String fileName)
 	{
 		try {
-				FileWriter fstream;
-				fstream = new FileWriter(fileName,true);
-		        BufferedWriter fop = new BufferedWriter(fstream);
-		    	    
-				for(int i=bi.getMinX();i<bi.getWidth();i++)
+			FileWriter fstream;
+			fstream = new FileWriter(fileName,true);
+			BufferedWriter fop = new BufferedWriter(fstream);
+
+			for(int i=bi.getMinX();i<bi.getWidth();i++)
+			{
+				for(int j=bi.getMinY();j<bi.getHeight();j++)
 				{
-					for(int j=bi.getMinY();j<bi.getHeight();j++)
-					{
-						Color color = new Color(bi.getRGB(i, j));
-						if(color.equals(Color.black))
-							fop.write("0 ");
-						else
-							fop.write("1 ");
-					}	
-				}
-				fop.write("\n");
-				fop.close();
-			} 
+					Color color = new Color(bi.getRGB(i, j));
+					if(color.equals(Color.black))
+						fop.write("0 ");
+					else
+						fop.write("1 ");
+				}	
+			}
+			fop.write("\n");
+			fop.close();
+		} 
 		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		
+
+
 	}
-	public void writeImageFile(BufferedImage bi, String filePath) throws IOException
-	{
-		ImageIO.write(bi,"jpg",new File(filePath));
-	}
-	public BufferedImage readImageFile(String filePath) throws IOException
-	{
-		return ImageIO.read(new File(filePath));
-	}
+
 	public BufferedImage processSegment(BufferedImage bi) throws IOException 
 	{
 		BufferedImage edgeBuff = sobelEdgeDetection2(bi);
-//		ImageIO.write(edgeBuff, "jpg",new File(filePath+"_1.jpg"));
-		
+		//		ImageIO.write(edgeBuff, "jpg",new File(filePath+"_1.jpg"));
+
 		BufferedImage scaledBuff = getScaledImage(edgeBuff,width,height);
-//		ImageIO.write(scaledBuff, "jpg",new File(filePath+"_2.jpg"));
-		
+		//		ImageIO.write(scaledBuff, "jpg",new File(filePath+"_2.jpg"));
+
 		BufferedImage monoBuff = getMonoChromeImage(scaledBuff, threshold);
-//		ImageIO.write(monoBuff, "jpg",new File(filePath+"_3.jpg"));
-		
+		//		ImageIO.write(monoBuff, "jpg",new File(filePath+"_3.jpg"));
+
 		return monoBuff;
 	}
-	
-	
-	public Vector<Double> getData(BufferedImage bi, double label) 
-	{
-		Vector<Double> dataFile = new Vector<Double>();
-	    for(int i=bi.getMinX();i<bi.getWidth();i++)
-		{
-	    	
-			for(int j=bi.getMinY();j<bi.getHeight();j++){
-				Color c = new Color(bi.getRGB(i, j));
-				if(c.getBlue() != 0)
-					dataFile.add(1.0); 
-				else
-					dataFile.add(0.0);
- //               System.out.println(c);
-			}			
-		}
 
-	    //Add class label
-	    dataFile.add(label);
-//	    System.out.println("size: "+dataFile.size());
-	    return dataFile;
-	}
+
 	/* Sobel.js
 	 * Kas Thomas
 	 * 31 January 2010
@@ -378,7 +428,7 @@ public class ImageProcessor {
 
 	BufferedImage sobelEdgeDetection2(BufferedImage img) 
 	{
-		
+
 		BufferedImage edged = new BufferedImage(img.getWidth(),img.getHeight(),
 				BufferedImage.TYPE_INT_RGB);
 
@@ -439,18 +489,18 @@ public class ImageProcessor {
 	}
 	BufferedImage sobelEdgeDetection(BufferedImage bi) 
 	{
-	
-		
-		 // Create a constant array with the Sobel horizontal kernel.
-	    float[] kernelMatrix = { -1, -2, -1,
-	                              0,  0,  0,
-	                              1,  2,  1 };
-	    // Read the image.
-	    PlanarImage input = PlanarImage.wrapRenderedImage(bi);
-	    // Create the kernel using the array.
-	    KernelJAI kernel = new KernelJAI(3,3,kernelMatrix);
-	    // Run the convolve operator, creating the processed image.
-	    PlanarImage output = JAI.create("convolve", input, kernel);
+
+
+		// Create a constant array with the Sobel horizontal kernel.
+		float[] kernelMatrix = { -1, -2, -1,
+				0,  0,  0,
+				1,  2,  1 };
+		// Read the image.
+		PlanarImage input = PlanarImage.wrapRenderedImage(bi);
+		// Create the kernel using the array.
+		KernelJAI kernel = new KernelJAI(3,3,kernelMatrix);
+		// Run the convolve operator, creating the processed image.
+		PlanarImage output = JAI.create("convolve", input, kernel);
 
 		return output.getAsBufferedImage();
 	}

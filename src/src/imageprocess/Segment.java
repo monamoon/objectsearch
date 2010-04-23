@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 public class Segment {
 	BufferedImage bi;
 	int count;
+	boolean isCorner = false;
 	public int getCount() {
 		return count;
 	}
@@ -33,5 +34,7 @@ public class Segment {
 	{
 		bi.setRGB(i, j, color.getRGB());
 		count = count+1;
+		if(i==0 || i==ImageProcessingConstants.scaleWidth-1 || j==0 || j==ImageProcessingConstants.scaleHeight-1)
+			isCorner = true;
 	}
 };
