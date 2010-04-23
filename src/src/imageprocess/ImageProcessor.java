@@ -270,7 +270,7 @@ public class ImageProcessor {
 		for(int i=0;i<segments.size();i++)
 		{
 			Segment segment = segments.elementAt(i); 
-			if(segment.getCount()>ImageProcessingConstants.objectThreshold)
+			if(segment.getCount()>ImageProcessingConstants.objectThresholdLow && segment.getCount()<ImageProcessingConstants.objectThresholdHigh)
 				segmentBuff.add(segment.getImage());
 		}
 		return segmentBuff;
