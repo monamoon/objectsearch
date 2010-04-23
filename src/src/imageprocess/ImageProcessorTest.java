@@ -22,7 +22,7 @@ public class ImageProcessorTest {
 			{
 				BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
 				ip.writeImageFile(processedBuff, filePath+"components/object_"+i+"_"+j+".jpg");
-				data.add(ip.getData(processedBuff, k));	
+				data.add(ip.getData(processedBuff, ++k));	
 			}
 			System.out.println("Done processing "+filePath+"car" + i + ".jpg");
 		}
