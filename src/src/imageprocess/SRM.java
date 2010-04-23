@@ -29,7 +29,7 @@ public class SRM {
 	int w,h,n;
 	double aspectratio;
 
-	double Q=	5.0;
+	double Q=ImageProcessingConstants.srmThreshold;
 	UnionFind UF;
 	double g; // number of levels in a color channel
 	double logdelta;
