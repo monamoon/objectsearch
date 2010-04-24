@@ -238,46 +238,66 @@ public class ImageProcessor {
 	{
 		Vector<bgColor> bgcolors = new Vector<bgColor>();
 		
-		for(int i=0;i<normalWidth;i++)
+		for(int i=0,x=0;i<normalWidth;i++)
 		{
 			Color c = new Color(bi.getRGB(i,0));
-			for(int x=0;x<bgcolors.size();x++)
+	
+			for(x=0;x<bgcolors.size();x++)
 			{
 				if (c.equals(bgcolors.elementAt(x).getColor()))
+				{
 					bgcolors.elementAt(x).addPixel();
-				else
-					bgcolors.add(new bgColor(c));
+					break;
+				}
 			}
+			if(x==bgcolors.size())
+				bgcolors.add(new bgColor(c));	
+			
+			
 			c = new Color(bi.getRGB(i,normalHeight-1));
-			for(int x=0;x<bgcolors.size();x++)
+			
+			for(x=0;x<bgcolors.size();x++)
 			{
 				if (c.equals(bgcolors.elementAt(x).getColor()))
+				{
 					bgcolors.elementAt(x).addPixel();
-				else
-					bgcolors.add(new bgColor(c));
+					break;
+				}
 			}
+			if(x==bgcolors.size())
+				bgcolors.add(new bgColor(c));
+		
 		}
-		for(int j=0;j<normalHeight;j++)
+		for(int j=0,x=0;j<normalHeight;j++)
 		{
 			Color c = new Color(bi.getRGB(0,j));
-			for(int x=0;x<bgcolors.size();x++)
+			
+			for(x=0;x<bgcolors.size();x++)
 			{
 				if (c.equals(bgcolors.elementAt(x).getColor()))
+				{
 					bgcolors.elementAt(x).addPixel();
-				else
-					bgcolors.add(new bgColor(c));
+					break;
+				}
 			}
+			if(x>bgcolors.size())
+				bgcolors.add(new bgColor(c));
+			
 			c = new Color(bi.getRGB(normalWidth-1,j));
-			for(int x=0;x<bgcolors.size();x++)
+			
+			for(x=0;x<bgcolors.size();x++)
 			{
 				if (c.equals(bgcolors.elementAt(x).getColor()))
+				{
 					bgcolors.elementAt(x).addPixel();
-				else
-					bgcolors.add(new bgColor(c));
+					break;
+				}
 			}
+			if(x>bgcolors.size())
+				bgcolors.add(new bgColor(c));
 		}
+				
 		BufferedImage buff = bi;
-		
 		for(int k=0;k<bgcolors.size();k++)
 		{
 			
