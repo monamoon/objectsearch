@@ -42,13 +42,13 @@ public class ImageSom {
 	}
 	
 	private void setupSOM(){
-		setSOM(new SOM(2, 
-				2, 
+		setSOM(new SOM(4, 
+				4, 
 				GridType.RECTANGLES, 
-				10000, 
+				20000, 
 				0.01, 
 				8, 
-				LearningType.EXPONENTIAL, 
+				LearningType.LINEAR, 
 				NeighbourhoodFunction.GAUSSIAN, 
 				new RBFKernelDistance()));
 		
