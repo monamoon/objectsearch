@@ -14,7 +14,7 @@ import som.ImageSom;
 public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException 
 	{
-		extractObjects("cars\\");
+	//	extractObjects("cars\\");
 		clusterObjects("cars\\components\\");
 	}
 	
