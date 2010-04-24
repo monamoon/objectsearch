@@ -45,7 +45,7 @@ public class ImageSom {
 		setSOM(new SOM(4, 
 				4, 
 				GridType.RECTANGLES, 
-				20000, 
+				10000, 
 				0.01, 
 				8, 
 				LearningType.LINEAR, 

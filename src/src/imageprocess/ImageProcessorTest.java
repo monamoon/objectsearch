@@ -28,12 +28,12 @@ public class ImageProcessorTest {
 			BufferedImage preprocessed = ip.preprocessImage(readImage);
 			writeImageFile(preprocessed, filePath+"car"+i+"_preprocessed.jpg");
 			
-			/*Vector<BufferedImage> segments = ip.getSegments(preprocessed);
+			Vector<BufferedImage> segments = ip.getSegments(preprocessed);
 			for(int j=0;j<segments.size();j++,k++)
 			{
 				BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
 				writeImageFile(processedBuff, filePath+"components\\object"+k+".jpg");
-			}*/	
+			}	
 		}
 	}
 	public static void clusterObjects(String dir) throws IOException
