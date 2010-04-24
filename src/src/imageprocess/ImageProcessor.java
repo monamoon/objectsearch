@@ -397,10 +397,10 @@ public class ImageProcessor {
 
 	public BufferedImage processSegment(BufferedImage bi) throws IOException 
 	{
-		BufferedImage edgeBuff = sobelEdgeDetection2(bi);
+	//	BufferedImage edgeBuff = sobelEdgeDetection2(bi);
 		//		ImageIO.write(edgeBuff, "jpg",new File(filePath+"_1.jpg"));
 
-		BufferedImage scaledBuff = getScaledImage(edgeBuff,width,height);
+		BufferedImage scaledBuff = getScaledImage(bi,width,height);
 		//		ImageIO.write(scaledBuff, "jpg",new File(filePath+"_2.jpg"));
 
 		BufferedImage monoBuff = getMonoChromeImage(scaledBuff, threshold);
