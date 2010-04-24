@@ -89,6 +89,7 @@ public class ImageProcessorTest {
 	}
 	public static BufferedImage readImageFile(String filePath) throws IOException
 	{
+		System.out.println("Path: "+filePath);
 		return ImageIO.read(new File(filePath));
 	}
 
