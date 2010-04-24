@@ -14,8 +14,9 @@ import som.ImageSom;
 public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException 
 	{
-		extractObjects("cars\\");
-		clusterObjects("cars\\components\\");
+		String path = System.getProperty("user.dir");
+		extractObjects(path+"\\cars\\");
+		clusterObjects(path+"\\cars\\components\\");
 	}
 	
 	public static void extractObjects(String filePath) throws IOException
