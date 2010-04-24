@@ -277,11 +277,14 @@ public class ImageProcessor {
 			}
 		}
 		BufferedImage buff = bi;
+		
 		for(int k=0;k<bgcolors.size();k++)
 		{
+			
 			bgColor bgcolor = bgcolors.elementAt(k);
 			if(bgcolor.getCount()<ImageProcessingConstants.bgThreshold)
 				continue;
+			
 			int rgbcolor = bgcolor.getColor().getRGB();
 			int rgbblack = Color.BLACK.getRGB();
 			for(int i=0;i<normalWidth;i++)
@@ -316,17 +319,22 @@ public class ImageProcessor {
 		bufferedImage.createGraphics().drawImage(scaledImage,0,0,null);
 		return bufferedImage;
 	}
+	public BufferedImage preprocessImage(BufferedImage bi) throws IOException
+	{
+		BufferedImage normalBuff = getScaledImage(bi,normalWidth,normalHeight);
+		BufferedImage segmentImage = getSegmentedImage(normalBuff);
+		BufferedImage filterbgbuff = removeBG(segmentImage);
+		return filterbgbuff;
+	}
 	public Vector<BufferedImage> getSegments(BufferedImage bi) throws IOException
 	{
 		Vector<Segment> segments = new Vector<Segment>();
-		BufferedImage normalBuff = getScaledImage(bi,normalWidth,normalHeight);
-		BufferedImage segmentImage = getSegmentedImage(normalBuff);
-		BufferedImage buff = removeBG(segmentImage);
-		for(int i=buff.getMinX();i<buff.getWidth();i++)
+		
+		for(int i=bi.getMinX();i<bi.getWidth();i++)
 		{
-			for(int j=buff.getMinY();j<buff.getHeight();j++)
+			for(int j=bi.getMinY();j<bi.getHeight();j++)
 			{
-				Color color = new Color(buff.getRGB(i, j));
+				Color color = new Color(bi.getRGB(i, j));
 				int x;
 				for(x=0;x<segments.size();x++)
 					if(segments.elementAt(x).getColor().equals(color))
