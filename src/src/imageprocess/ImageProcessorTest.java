@@ -14,7 +14,7 @@ import som.ImageSom;
 public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException 
 	{
-	//	extractObjects("cars\\");
+		extractObjects("cars\\");
 		clusterObjects("cars\\components\\");
 	}
 	
@@ -25,13 +25,15 @@ public class ImageProcessorTest {
 		for(int i=1; i<=15; i++)
 		{
 			BufferedImage readImage = readImageFile(filePath+"car" + i + ".jpg");
-			Vector<BufferedImage> segments = ip.getSegments(readImage);
-
+			BufferedImage preprocessed = ip.preprocessImage(readImage);
+			writeImageFile(preprocessed, filePath+"car"+i+"_preprocessed.jpg");
+			
+			/*Vector<BufferedImage> segments = ip.getSegments(preprocessed);
 			for(int j=0;j<segments.size();j++,k++)
 			{
 				BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
 				writeImageFile(processedBuff, filePath+"components\\object"+k+".jpg");
-			}	
+			}*/	
 		}
 	}
 	public static void clusterObjects(String dir) throws IOException
