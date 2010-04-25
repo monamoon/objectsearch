@@ -48,8 +48,8 @@ public class ImageSom {
 				40000, 
 				0.01, 
 				8, 
-				LearningType.LINEAR, 
-				NeighbourhoodFunction.GAUSSIAN, 
+				LearningType.EXPONENTIAL, 
+				NeighbourhoodFunction.STEP, 
 				new RBFKernelDistance()));
 		
 	}
