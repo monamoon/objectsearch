@@ -188,6 +188,7 @@ import java.awt.Graphics2D;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
@@ -422,13 +423,50 @@ public class ImageProcessor {
 
 
 	}
-
+	public BufferedImage cropImage(BufferedImage bi)
+	{
+		int T = ImageProcessingConstants.centerThreshold;
+		int minX=normalWidth-1;
+		int minY=normalHeight-1;
+		int maxX=0;
+		int maxY=0;
+		int rgbblack = Color.BLACK.getRGB();
+		for(int i=0;i<normalWidth-1;i++)
+		{
+			for(int j=0;j<normalHeight-1;j++)
+			{
+				if(bi.getRGB(i, j) != rgbblack)
+				{
+					if(minX > i)minX=i;
+					if(minY > j)minY=j;
+					if(maxX < i)maxX=i;
+					if(maxY < j)maxY=j;
+				}
+			}
+		}
+		if(!(maxX>minX && maxY > minY))
+			System.out.println("OUT OF BOUNDS");
+		
+		BufferedImage buff = new BufferedImage(maxX-minX+100, maxY-minY+100, BufferedImage.TYPE_INT_RGB);
+		for(int i=0;i<T+maxX-minX;i++)
+		{
+			for(int j=0;j<T+maxY-minY;j++)
+			{
+				if(i<T/2 || j<T/2 || i>(T/2+maxX-minX) || j>(T/2+maxY-minY))
+					buff.setRGB(i, j, rgbblack);
+				else 
+					buff.setRGB(i,j,bi.getRGB(minX+i-T/2,minY+j-T/2));
+			}
+		}
+		return buff;
+	}
 	public BufferedImage processSegment(BufferedImage bi) throws IOException 
 	{
 	//	BufferedImage edgeBuff = sobelEdgeDetection2(bi);
 		//		ImageIO.write(edgeBuff, "jpg",new File(filePath+"_1.jpg"));
-
-		BufferedImage scaledBuff = getScaledImage(bi,width,height);
+		BufferedImage cropBuff = cropImage(bi);
+		
+		BufferedImage scaledBuff = getScaledImage(cropBuff,width,height);
 		//		ImageIO.write(scaledBuff, "jpg",new File(filePath+"_2.jpg"));
 
 		BufferedImage monoBuff = getMonoChromeImage(scaledBuff, threshold);
