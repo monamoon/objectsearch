@@ -26,10 +26,14 @@ public class ImageProcessorTest {
 		for(int i=1; i<=15; i++)
 		{
 			BufferedImage readImage = readImageFile(filePath+"car" + i + ".jpg");
-			BufferedImage preprocessed = ip.preprocessImage(readImage);
+			BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
+			BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
+			BufferedImage preprocessed = ip.removeBG(segmentImage);
+
+			
 			writeImageFile(preprocessed, filePath+"car"+i+"_preprocessed.jpg");
 			
-			Vector<BufferedImage> segments = ip.getSegments(preprocessed);
+			Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
 			for(int j=0;j<segments.size();j++,k++)
 			{
 				BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
