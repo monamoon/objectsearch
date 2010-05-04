@@ -15,31 +15,59 @@ public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException 
 	{
 		String path = System.getProperty("user.dir");
-		extractObjects(path+"\\cars\\");
-		clusterObjects(path+"\\cars\\components\\");
+		extractObjects(path+"\\images\\test");
+		extractObjects(path+"\\images\\train\\");
 	}
 	
-	public static void extractObjects(String filePath) throws IOException
+	public static void extractObjects(String filePath)
 	{
 		ImageProcessor ip = new ImageProcessor();
-		int k=1;
-		for(int i=1; i<=15; i++)
+		for(int i=0;;i++)
 		{
-			BufferedImage readImage = readImageFile(filePath+"car" + i + ".jpg");
-			BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
-			BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
-			BufferedImage preprocessed = ip.removeBG(segmentImage);
-
-			
-			writeImageFile(preprocessed, filePath+"car"+i+"_preprocessed.jpg");
-			
-			Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
-			for(int j=0;j<segments.size();j++,k++)
+			try
 			{
-				BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
-				writeImageFile(processedBuff, filePath+"components\\object"+k+".jpg");
-			}	
+				File imgFile = new File(filePath+"g"+i+".jpg");
+				BufferedImage readImage = ImageIO.read(imgFile);
+				BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
+				BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
+				BufferedImage preprocessed = ip.removeBG(segmentImage);
+				writeImageFile(preprocessed, filePath+"preprocess/g" +i+".jpg");
+				Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
+				for(int j=0,k=0;j<segments.size();j++,k++)
+				{
+					BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
+					writeImageFile(processedBuff, filePath+"objects/g"+i+"_"+k+".jpg");
+				}
+				
+			}
+			catch (IOException e)
+			{
+				break;
+			}
 		}
+		
+		for(int i=0;;i++)
+		{
+			try
+			{
+				File imgFile = new File(filePath+"b"+i+".jpg");
+				BufferedImage readImage = ImageIO.read(imgFile);
+				BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
+				BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
+				BufferedImage preprocessed = ip.removeBG(segmentImage);
+				writeImageFile(preprocessed, filePath+"preprocess/b" +i+".jpg");
+				Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
+				for(int j=0,k=0;j<segments.size();j++,k++)
+				{
+					BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
+					writeImageFile(processedBuff, filePath+"objects/b"+i+"_"+k+".jpg");
+				}
+			}
+			catch (IOException e)
+			{
+				break;
+			}
+		}	
 	}
 	public static void clusterObjects(String dir) throws IOException
 	{
@@ -49,7 +77,7 @@ public class ImageProcessorTest {
 			String fileName = dir+"object"+k+".jpg";
 			if(!(new File(fileName)).exists())
 				break;
-			BufferedImage readImage = readImageFile(fileName);
+			BufferedImage readImage = ImageIO.read(new File(fileName));
 			data.add(getData(readImage,k));	
 		}
 		System.out.println("Output size: "+data.size());
@@ -62,8 +90,6 @@ public class ImageProcessorTest {
 			for(int j=0; j<curr.size(); j++)
 				System.out.println(curr.get(j).classValue());
 		}
-
-
 	}
 
 	public static Vector<Double> getData(BufferedImage bi, double label) 
@@ -92,10 +118,4 @@ public class ImageProcessorTest {
 	{
 		ImageIO.write(bi,"jpg",new File(filePath));
 	}
-	public static BufferedImage readImageFile(String filePath) throws IOException
-	{
-		System.out.println("Path: "+filePath);
-		return ImageIO.read(new File(filePath));
-	}
-
 }
