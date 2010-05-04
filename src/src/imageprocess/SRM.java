@@ -1,11 +1,11 @@
 package imageprocess;
-import java.awt.*;
-import java.applet.*;
-import java.awt.image.*;
-import java.io.File;
+import java.awt.Canvas;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageProducer;
+import java.awt.image.MemoryImageSource;
+import java.awt.image.PixelGrabber;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class SRM {
 
