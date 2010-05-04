@@ -33,10 +33,10 @@ public class ImageProcessorTest {
 				BufferedImage preprocessed = ip.removeBG(segmentImage);
 				writeImageFile(preprocessed, filePath+"preprocess/g" +i+".jpg");
 				Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
-				for(int j=0,k=0;j<segments.size();j++,k++)
+				for(int j=0;j<segments.size();j++)
 				{
 					BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
-					writeImageFile(processedBuff, filePath+"objects/g"+i+"_"+k+".jpg");
+					writeImageFile(processedBuff, filePath+"objects/g"+i+"_"+j+".jpg");
 				}
 				
 			}
