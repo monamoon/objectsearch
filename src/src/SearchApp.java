@@ -1,8 +1,4 @@
-import imageprocess.ImageProcessor;
 import java.io.IOException;
-import java.util.Vector;
-import net.sf.javaml.core.Dataset;
-import som.ImageSom;
 
 
 
