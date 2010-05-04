@@ -22,10 +22,11 @@ public class ImageProcessorTest {
 	public static void extractObjects(String filePath)
 	{
 		ImageProcessor ip = new ImageProcessor();
-		for(int i=0;;i++)
+		for(int i=1;;i++)
 		{
 			try
 			{
+				System.out.println(filePath+"g"+i+".jpg");
 				File imgFile = new File(filePath+"g"+i+".jpg");
 				BufferedImage readImage = ImageIO.read(imgFile);
 				BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
@@ -42,11 +43,12 @@ public class ImageProcessorTest {
 			}
 			catch (IOException e)
 			{
+				System.out.println("COULD not find file");
 				break;
 			}
 		}
 		
-		for(int i=0;;i++)
+		for(int i=1;;i++)
 		{
 			try
 			{
