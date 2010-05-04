@@ -30,9 +30,9 @@ public class Segment {
 		count = 0;
 		color = c;
 	}
-	void setPixel(int i,int j)
+	void setPixel(int i,int j, int rgb)
 	{
-		bi.setRGB(i, j, color.getRGB());
+		bi.setRGB(i, j, rgb);
 		count = count+1;
 		if(i==0 || i==ImageProcessingConstants.getScaleWidth()-1 || j==0 || j==ImageProcessingConstants.getScaleheight()-1)
 			isCorner = true;

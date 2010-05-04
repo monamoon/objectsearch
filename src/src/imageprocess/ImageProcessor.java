@@ -340,22 +340,16 @@ public class ImageProcessor {
 		bufferedImage.createGraphics().drawImage(scaledImage,0,0,null);
 		return bufferedImage;
 	}
-	public BufferedImage preprocessImage(BufferedImage bi) throws IOException
-	{
-		BufferedImage normalBuff = getScaledImage(bi,getNormalWidth(),getNormalHeight());
-		BufferedImage segmentImage = getSegmentedImage(normalBuff);
-		BufferedImage filterbgbuff = removeBG(segmentImage);
-		return filterbgbuff;
-	}
-	public Vector<BufferedImage> getSegments(BufferedImage bi) throws IOException
+	
+	public Vector<BufferedImage> getSegments(BufferedImage normalbi, BufferedImage segBi) throws IOException
 	{
 		Vector<Segment> segments = new Vector<Segment>();
 		
-		for(int i=bi.getMinX();i<bi.getWidth();i++)
+		for(int i=segBi.getMinX();i<segBi.getWidth();i++)
 		{
-			for(int j=bi.getMinY();j<bi.getHeight();j++)
+			for(int j=segBi.getMinY();j<segBi.getHeight();j++)
 			{
-				Color color = new Color(bi.getRGB(i, j));
+				Color color = new Color(segBi.getRGB(i, j));
 				int x;
 				for(x=0;x<segments.size();x++)
 					if(segments.elementAt(x).getColor().equals(color))
@@ -364,12 +358,12 @@ public class ImageProcessor {
 				if(x==segments.size())
 				{
 					Segment curSegment = new Segment(color);
-					curSegment.setPixel(i, j);
+					curSegment.setPixel(i,j,normalbi.getRGB(i,j));
 					segments.add(curSegment);
 				}
 				else
 				{
-					segments.elementAt(x).setPixel(i, j);
+					segments.elementAt(x).setPixel(i, j,normalbi.getRGB(i,j));
 				}
 			}	
 		}
@@ -378,9 +372,22 @@ public class ImageProcessor {
 		{
 			Segment segment = segments.elementAt(i); 
 			if(segment.getCount()>ImageProcessingConstants.getObjectthresholdlow() && segment.getCount()<ImageProcessingConstants.getObjectthresholdhigh() && !segment.isCorner)
-				segmentBuff.add(segment.getImage());
+			{
+				BufferedImage segBuff = segment.getImage();
+				segmentBuff.add(segBuff);
+				segmentBuff.add(getMirrorImage(segBuff));
+			}	
+				
 		}
 		return segmentBuff;
+	}
+	public BufferedImage getMirrorImage(BufferedImage bi)
+	{
+	  BufferedImage buff = this.getScaledImage(bi, bi.getWidth(), bi.getHeight());
+	  for(int j=0;j<buff.getHeight();j++)
+		  for(int i=0;i<buff.getWidth();i++)
+		  	  buff.setRGB(i,j,bi.getRGB(bi.getWidth()-i-1,j));
+	  return buff;
 	}
 	public BufferedImage getSegmentedImage(BufferedImage bi) throws IOException
 	{
@@ -464,11 +471,12 @@ public class ImageProcessor {
 	{
 	//	BufferedImage edgeBuff = sobelEdgeDetection2(bi);
 		//		ImageIO.write(edgeBuff, "jpg",new File(filePath+"_1.jpg"));
-		BufferedImage cropBuff = cropImage(bi);
+		BufferedImage edgeImage = sobelEdgeDetection(bi);
+		BufferedImage cropBuff = cropImage(edgeImage);
 		
 		BufferedImage scaledBuff = getScaledImage(cropBuff,width,height);
 		//		ImageIO.write(scaledBuff, "jpg",new File(filePath+"_2.jpg"));
-
+		
 		BufferedImage monoBuff = getMonoChromeImage(scaledBuff, threshold);
 		//		ImageIO.write(monoBuff, "jpg",new File(filePath+"_3.jpg"));
 
