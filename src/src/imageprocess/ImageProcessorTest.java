@@ -15,8 +15,8 @@ public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException 
 	{
 		String path = System.getProperty("user.dir");
-		extractObjects(path+"\\images\\test");
 		extractObjects(path+"\\images\\train\\");
+		extractObjects(path+"\\images\\test\\");
 	}
 	
 	public static void extractObjects(String filePath)
