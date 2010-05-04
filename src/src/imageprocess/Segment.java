@@ -23,7 +23,7 @@ public class Segment {
 		Color bg = Color.BLACK;
 		if(c.equals(bg))
 			bg = Color.WHITE;
-		bi = new BufferedImage(ImageProcessingConstants.scaleWidth, ImageProcessingConstants.scaleHeight, BufferedImage.TYPE_INT_RGB);
+		bi = new BufferedImage(ImageProcessingConstants.getScaleWidth(), ImageProcessingConstants.getScaleheight(), BufferedImage.TYPE_INT_RGB);
 		for(int i=0;i<bi.getWidth();i++)
 			for(int j=0;j<bi.getHeight();j++)
 				bi.setRGB(i, j, bg.getRGB());
@@ -34,7 +34,7 @@ public class Segment {
 	{
 		bi.setRGB(i, j, color.getRGB());
 		count = count+1;
-		if(i==0 || i==ImageProcessingConstants.scaleWidth-1 || j==0 || j==ImageProcessingConstants.scaleHeight-1)
+		if(i==0 || i==ImageProcessingConstants.getScaleWidth()-1 || j==0 || j==ImageProcessingConstants.getScaleheight()-1)
 			isCorner = true;
 	}
 };

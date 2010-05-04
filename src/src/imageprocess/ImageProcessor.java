@@ -230,11 +230,11 @@ class bgColor
 };
 public class ImageProcessor {
 
-	int width = ImageProcessingConstants.inputWidth;
-	int height = ImageProcessingConstants.inputHeight;
-	int normalWidth = ImageProcessingConstants.scaleWidth;
-	int normalHeight = ImageProcessingConstants.scaleHeight;
-	double threshold = ImageProcessingConstants.monoChromeThreshold;
+	int width = ImageProcessingConstants.getInputwidth();
+	int height = ImageProcessingConstants.getInputheight();
+	private int normalWidth = ImageProcessingConstants.getScaleWidth();
+	private int normalHeight = ImageProcessingConstants.getScaleheight();
+	double threshold = ImageProcessingConstants.getMonochromethreshold();
 	public BufferedImage removeBG(BufferedImage bi)
 	{
 		Vector<bgColor> bgcolors = new Vector<bgColor>();
@@ -303,12 +303,12 @@ public class ImageProcessor {
 		{
 			
 			bgColor bgcolor = bgcolors.elementAt(k);
-			if(bgcolor.getCount()<ImageProcessingConstants.bgThreshold)
+			if(bgcolor.getCount()<ImageProcessingConstants.getBgthreshold())
 				continue;
 			
 			int rgbcolor = bgcolor.getColor().getRGB();
 			int rgbblack = Color.BLACK.getRGB();
-			for(int i=0;i<normalWidth;i++)
+			for(int i=0;i<getNormalWidth();i++)
 				for(int j=0;j<normalHeight;j++)
 					if(buff.getRGB(i,j)==rgbcolor)
 						buff.setRGB(i, j, rgbblack);
@@ -342,7 +342,7 @@ public class ImageProcessor {
 	}
 	public BufferedImage preprocessImage(BufferedImage bi) throws IOException
 	{
-		BufferedImage normalBuff = getScaledImage(bi,normalWidth,normalHeight);
+		BufferedImage normalBuff = getScaledImage(bi,getNormalWidth(),getNormalHeight());
 		BufferedImage segmentImage = getSegmentedImage(normalBuff);
 		BufferedImage filterbgbuff = removeBG(segmentImage);
 		return filterbgbuff;
@@ -377,7 +377,7 @@ public class ImageProcessor {
 		for(int i=0;i<segments.size();i++)
 		{
 			Segment segment = segments.elementAt(i); 
-			if(segment.getCount()>ImageProcessingConstants.objectThresholdLow && segment.getCount()<ImageProcessingConstants.objectThresholdHigh && !segment.isCorner)
+			if(segment.getCount()>ImageProcessingConstants.getObjectthresholdlow() && segment.getCount()<ImageProcessingConstants.getObjectthresholdhigh() && !segment.isCorner)
 				segmentBuff.add(segment.getImage());
 		}
 		return segmentBuff;
@@ -425,7 +425,7 @@ public class ImageProcessor {
 	}
 	public BufferedImage cropImage(BufferedImage bi)
 	{
-		int T = ImageProcessingConstants.centerThreshold;
+		int T = ImageProcessingConstants.getCenterthreshold();
 		int minX=normalWidth-1;
 		int minY=normalHeight-1;
 		int maxX=0;
@@ -570,5 +570,13 @@ public class ImageProcessor {
 
 		return output.getAsBufferedImage();
 	}
+	
+	public int getNormalHeight(){
+		return this.normalHeight;
+	}
+	public int getNormalWidth(){
+		return this.normalWidth;
+	}
+	
 
 }
