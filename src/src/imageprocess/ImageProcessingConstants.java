@@ -5,10 +5,10 @@ public class ImageProcessingConstants {
 	static private final int scaleHeight = 800;
 	static private final int inputWidth = 100;
 	static private final int inputHeight = 80;
-	static private final int objectThresholdLow = (scaleWidth *scaleWidth*3)/100;
+	static private final int objectThresholdLow = (scaleWidth *scaleWidth*5)/100;
 	static private final int objectThresholdHigh = (scaleWidth *scaleWidth*50)/100;
 	static private final double monoChromeThreshold = 0.01;
-	static private final double srmThreshold = 32.0;
+	static private final double srmThreshold = 5;
 	static private final int bgThreshold = 100;
 	static private final int centerThreshold = 100;
 	
