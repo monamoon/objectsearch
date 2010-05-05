@@ -19,8 +19,8 @@ public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException 
 	{
 		String path = System.getProperty("user.dir");
-//		extractObjects(path+"\\images\\train\\");
-//		extractObjects(path+"\\images\\test\\");
+		extractObjects(path+"\\images\\train\\");
+		extractObjects(path+"\\images\\test\\");
 		classify(path+"\\images");
 	}
 	
@@ -37,13 +37,16 @@ public class ImageProcessorTest {
 				BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
 				BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
 				BufferedImage preprocessed = ip.removeBG(segmentImage);
-				writeImageFile(preprocessed, filePath+"preprocess/g" +i+".jpg");
 				Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
+				if(segments.size()==0)
+					continue;
 				
-				BufferedImage masterImage = ip.getMasterImage(normalBuff, segments);
-				BufferedImage master2 = ip.processSegment(masterImage);
+				BufferedImage master1 = ip.getMasterImage(normalBuff, segments);
+				BufferedImage master2 = ip.processSegment(master1);
+				BufferedImage master3 = ip.getMirrorImage(master2);
 				
 				writeImageFile(master2, filePath+"preprocess/g" +i+".jpg");
+				writeImageFile(master3, filePath+"preprocess/g" +(100-i)+".jpg");
 				
 				for(int j=0;j<segments.size();j++)
 				{
@@ -69,10 +72,15 @@ public class ImageProcessorTest {
 				BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
 				BufferedImage preprocessed = ip.removeBG(segmentImage);
 				Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
-				BufferedImage masterImage = ip.getMasterImage(normalBuff, segments);
-				BufferedImage master2 = ip.processSegment(masterImage);
+				if(segments.size()==0)
+					continue;
+				BufferedImage master1 = ip.getMasterImage(normalBuff, segments);
+				BufferedImage master2 = ip.processSegment(master1);
+				BufferedImage master3 = ip.getMirrorImage(master2);		
 				
 				writeImageFile(master2, filePath+"preprocess/b" +i+".jpg");
+				writeImageFile(master3, filePath+"preprocess/b" +(100-i)+".jpg");
+				
 				for(int j=0,k=0;j<segments.size();j++,k++)
 				{
 					BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
@@ -115,49 +123,54 @@ public class ImageProcessorTest {
 		SVMClassifier svm = new SVMClassifier();
 		
 		//train SVM
-		String trainPath = path+"\\train\\objects\\";
+		String trainPath = path+"\\train\\preprocess\\";
 			
+		for(int j=0; j<10; j++){
 		for(int k=1;k<100;k++)
 		{
 			//positive examples
-			for(int j=0; j<100; j++){
-				String fileName = trainPath + "g"+k+"_"+j+".jpg";
-				if(!(new File(fileName)).exists())
-					break;
+			
+				String fileName = trainPath + "g"+k+/*"_"+j+*/".jpg";
+				if((new File(fileName)).exists())
+				{	
 				BufferedImage readImage = ImageIO.read(new File(fileName));
-				trainset.add(getData(readImage,1));	
-			}
+				trainset.add(getData(readImage,1));
+				}
+				
 			//negative examples
-			for(int j=0; j<100; j++){
-				String fileName = trainPath + "b"+k+"_"+j+".jpg";
-				if(!(new File(fileName)).exists())
-					break;
+			
+				fileName = trainPath + "b"+k+/*"_"+j+*/".jpg";
+				if((new File(fileName)).exists())
+				{
 				BufferedImage readImage = ImageIO.read(new File(fileName));
-				trainset.add(getData(readImage,0));	
-			}
+				trainset.add(getData(readImage,0));
+				}
+		}
 		}
 		
 		//test SVM
-		String testPath = path+"\\test\\objects\\";
+		String testPath = path+"\\test\\preprocess\\";
 			
 		for(int k=1;k<100;k++)
 		{
 			//positive examples
-			for(int j=0; j<100; j++){
-				String fileName = testPath + "g"+k+"_"+j+".jpg";
-				if(!(new File(fileName)).exists())
-					break;
+//			for(int j=0; j<100; j++){
+				String fileName = testPath + "g"+k+/*"_"+j+*/".jpg";
+				if((new File(fileName)).exists())
+				{
 				BufferedImage readImage = ImageIO.read(new File(fileName));
-				testset.add(getData(readImage,1));	
-			}
+				testset.add(getData(readImage,1));
+				}
+			//}
 			//negative examples
-			for(int j=0; j<100; j++){
-				String fileName = testPath + "b"+k+"_"+j+".jpg";
-				if(!(new File(fileName)).exists())
-					break;
+			//for(int j=0; j<100; j++){
+				/*String*/ fileName = testPath + "b"+k+/*"_"+j+*/".jpg";
+				if((new File(fileName)).exists())
+				{
 				BufferedImage readImage = ImageIO.read(new File(fileName));
-				testset.add(getData(readImage,0));	
-			}
+				testset.add(getData(readImage,0));
+				}
+			//}
 		}
 		
 		svm.train(trainset);
