@@ -139,7 +139,7 @@ public class ImageProcessor {
 				if(r > 255) r = 255;
 				if(g > 255) g = 255;
 				if(b > 255) b = 255;
-
+ 
 				edged.setRGB(x, y,(r<<16)|(g<<8)|b);
 			}
 		return edged;
@@ -188,11 +188,13 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
@@ -358,18 +360,38 @@ public class ImageProcessor {
 			}	
 		}
 		Vector<BufferedImage> segmentBuff = new Vector<BufferedImage>();
+
 		for(int i=0;i<segments.size();i++)
 		{
 			Segment segment = segments.elementAt(i); 
+
 			if(segment.getCount()>ImageProcessingConstants.getObjectthresholdlow() && segment.getCount()<ImageProcessingConstants.getObjectthresholdhigh() && !segment.isCorner)
 			{
 				BufferedImage segBuff = segment.getImage();
 				segmentBuff.add(segBuff);
-				segmentBuff.add(getMirrorImage(segBuff));
+				//segmentBuff.add(getMirrorImage(segBuff));
 			}	
 				
 		}
 		return segmentBuff;
+	}
+	public BufferedImage getMasterImage(BufferedImage normalbi, Vector<BufferedImage> segments)
+	{
+		BufferedImage masterImage = new BufferedImage(normalbi.getWidth(), normalbi.getHeight(), BufferedImage.TYPE_INT_RGB);
+		for(int i=0;i<segments.size();i++)
+		{
+			BufferedImage segBuff = segments.elementAt(i); 
+			
+			for(int j=0;j<masterImage.getWidth();j++)
+			{
+				for(int k=0;k<masterImage.getHeight();k++)
+				{
+					if(segBuff.getRGB(j,k)!=Color.BLACK.getRGB())
+						masterImage.setRGB(j,k,normalbi.getRGB(j,k));	
+				}
+			}
+		}	
+		return masterImage;
 	}
 	public BufferedImage getMirrorImage(BufferedImage bi)
 	{
@@ -442,7 +464,10 @@ public class ImageProcessor {
 			}
 		}
 		if(!(maxX>minX && maxY > minY))
+		{
 			System.out.println("OUT OF BOUNDS");
+			return bi;
+		}
 		
 		BufferedImage buff = new BufferedImage(maxX-minX+100, maxY-minY+100, BufferedImage.TYPE_INT_RGB);
 		for(int i=0;i<T+maxX-minX;i++)
