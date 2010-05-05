@@ -19,9 +19,10 @@ public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException 
 	{
 		String path = System.getProperty("user.dir");
-		extractObjects(path+"\\images\\train\\");
-		extractObjects(path+"\\images\\test\\");
-		classify(path+"\\images");
+		//extractObjects(path+"\\images\\train\\");
+		//extractObjects(path+"\\images\\test\\");
+		//classify(path+"\\images");
+		clusterObjects(path+"\\images");
 	}
 	
 	public static void extractObjects(String filePath)
@@ -93,16 +94,40 @@ public class ImageProcessorTest {
 			}
 		}	
 	}
-/*	public static void clusterObjects(String dir) throws IOException
+	public static void clusterObjects(String dir) throws IOException
 	{
 		Vector<Vector<Double>> data = new Vector<Vector<Double>>();	
-		for(int k=1;k<1000;k++)
+		for(int k=1;k<100;k++)
 		{
-			String fileName = dir+"object"+k+".jpg";
+			String fileName = dir+"\\train\\preprocess\\g"+k+".jpg";
 			if(!(new File(fileName)).exists())
-				break;
+				continue;
 			BufferedImage readImage = ImageIO.read(new File(fileName));
 			data.add(getData(readImage,k));	
+		}
+		for(int k=1;k<100;k++)
+		{
+			String fileName = dir+"\\train\\preprocess\\b"+k+".jpg";
+			if(!(new File(fileName)).exists())
+				continue;
+			BufferedImage readImage = ImageIO.read(new File(fileName));
+			data.add(getData(readImage,-k));	
+		}
+		for(int k=1;k<100;k++)
+		{
+			String fileName = dir+"\\test\\preprocess\\g"+k+".jpg";
+			if(!(new File(fileName)).exists())
+				continue;
+			BufferedImage readImage = ImageIO.read(new File(fileName));
+			data.add(getData(readImage,100+k));	
+		}
+		for(int k=1;k<100;k++)
+		{
+			String fileName = dir+"\\test\\preprocess\\b"+k+".jpg";
+			if(!(new File(fileName)).exists())
+				continue;
+			BufferedImage readImage = ImageIO.read(new File(fileName));
+			data.add(getData(readImage,-(100+k)));	
 		}
 		System.out.println("Output size: "+data.size());
 		ImageSom som = new ImageSom(data);
@@ -115,7 +140,7 @@ public class ImageProcessorTest {
 				System.out.println(curr.get(j).classValue());
 		}
 	}
-*/
+
 	
 	public static void classify(String path) throws IOException{
 		Vector<Vector<Double>> trainset = new Vector<Vector<Double>>();
