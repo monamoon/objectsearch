@@ -36,6 +36,12 @@ public class ImageProcessorTest {
 				BufferedImage preprocessed = ip.removeBG(segmentImage);
 				writeImageFile(preprocessed, filePath+"preprocess/g" +i+".jpg");
 				Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
+				
+				BufferedImage masterImage = ip.getMasterImage(normalBuff, segments);
+				BufferedImage master2 = ip.processSegment(masterImage);
+				
+				writeImageFile(master2, filePath+"preprocess/g" +i+".jpg");
+				
 				for(int j=0;j<segments.size();j++)
 				{
 					BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
@@ -59,8 +65,11 @@ public class ImageProcessorTest {
 				BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
 				BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
 				BufferedImage preprocessed = ip.removeBG(segmentImage);
-				writeImageFile(preprocessed, filePath+"preprocess/b" +i+".jpg");
 				Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
+				BufferedImage masterImage = ip.getMasterImage(normalBuff, segments);
+				BufferedImage master2 = ip.processSegment(masterImage);
+				
+				writeImageFile(master2, filePath+"preprocess/b" +i+".jpg");
 				for(int j=0,k=0;j<segments.size();j++,k++)
 				{
 					BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
