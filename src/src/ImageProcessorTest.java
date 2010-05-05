@@ -21,8 +21,8 @@ public class ImageProcessorTest {
 		String path = System.getProperty("user.dir");
 		//extractObjects(path+"\\images\\train\\");
 		//extractObjects(path+"\\images\\test\\");
-		//classify(path+"\\images");
-		clusterObjects(path+"\\images");
+		classify(path+"\\images");
+//		clusterObjects(path+"\\images");
 	}
 	
 	public static void extractObjects(String filePath)
@@ -198,10 +198,10 @@ public class ImageProcessorTest {
 			//}
 		}
 		
-		svm.train(trainset);
-		Vector<Object> predictions = svm.classify(testset);
+//		svm.train(trainset);
+//		Vector<Object> predictions = svm.classify(testset);
 		
-		
+		Utility.write("train.arff", trainset);
 	}
 	
 	
