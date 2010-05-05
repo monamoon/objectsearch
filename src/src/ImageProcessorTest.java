@@ -10,6 +10,8 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
+import classify.SVMClassifier;
+
 import net.sf.javaml.core.Dataset;
 import som.ImageSom;
 
@@ -17,8 +19,9 @@ public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException 
 	{
 		String path = System.getProperty("user.dir");
-		extractObjects(path+"\\images\\train\\");
-		extractObjects(path+"\\images\\test\\");
+//		extractObjects(path+"\\images\\train\\");
+//		extractObjects(path+"\\images\\test\\");
+		classify(path+"\\images");
 	}
 	
 	public static void extractObjects(String filePath)
@@ -82,7 +85,7 @@ public class ImageProcessorTest {
 			}
 		}	
 	}
-	public static void clusterObjects(String dir) throws IOException
+/*	public static void clusterObjects(String dir) throws IOException
 	{
 		Vector<Vector<Double>> data = new Vector<Vector<Double>>();	
 		for(int k=1;k<1000;k++)
@@ -104,7 +107,67 @@ public class ImageProcessorTest {
 				System.out.println(curr.get(j).classValue());
 		}
 	}
-
+*/
+	
+	public static void classify(String path) throws IOException{
+		Vector<Vector<Double>> trainset = new Vector<Vector<Double>>();
+		Vector<Vector<Double>> testset = new Vector<Vector<Double>>();
+		SVMClassifier svm = new SVMClassifier();
+		
+		//train SVM
+		String trainPath = path+"\\train\\objects\\";
+			
+		for(int k=1;k<100;k++)
+		{
+			//positive examples
+			for(int j=0; j<100; j++){
+				String fileName = trainPath + "g"+k+"_"+j+".jpg";
+				if(!(new File(fileName)).exists())
+					break;
+				BufferedImage readImage = ImageIO.read(new File(fileName));
+				trainset.add(getData(readImage,1));	
+			}
+			//negative examples
+			for(int j=0; j<100; j++){
+				String fileName = trainPath + "b"+k+"_"+j+".jpg";
+				if(!(new File(fileName)).exists())
+					break;
+				BufferedImage readImage = ImageIO.read(new File(fileName));
+				trainset.add(getData(readImage,0));	
+			}
+		}
+		
+		//test SVM
+		String testPath = path+"\\test\\objects\\";
+			
+		for(int k=1;k<100;k++)
+		{
+			//positive examples
+			for(int j=0; j<100; j++){
+				String fileName = testPath + "g"+k+"_"+j+".jpg";
+				if(!(new File(fileName)).exists())
+					break;
+				BufferedImage readImage = ImageIO.read(new File(fileName));
+				testset.add(getData(readImage,1));	
+			}
+			//negative examples
+			for(int j=0; j<100; j++){
+				String fileName = testPath + "b"+k+"_"+j+".jpg";
+				if(!(new File(fileName)).exists())
+					break;
+				BufferedImage readImage = ImageIO.read(new File(fileName));
+				testset.add(getData(readImage,0));	
+			}
+		}
+		
+		svm.train(trainset);
+		Vector<Object> predictions = svm.classify(testset);
+		
+		
+	}
+	
+	
+	
 	public static Vector<Double> getData(BufferedImage bi, double label) 
 	{
 		Vector<Double> dataFile = new Vector<Double>();
