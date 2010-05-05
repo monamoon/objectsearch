@@ -377,6 +377,8 @@ public class ImageProcessor {
 	}
 	public BufferedImage getMasterImage(BufferedImage normalbi, Vector<BufferedImage> segments)
 	{
+		if(segments.size()==0)
+			return null;
 		BufferedImage masterImage = new BufferedImage(normalbi.getWidth(), normalbi.getHeight(), BufferedImage.TYPE_INT_RGB);
 		for(int i=0;i<segments.size();i++)
 		{
