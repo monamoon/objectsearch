@@ -21,17 +21,21 @@ public class NeuralNetwork {
 		
 	}
 	
-	private void setupMLP(){
-		int epochs = 10000;
+	public void setupMLP(){
+		
+		int epochs = 10;
 		getMLP().setTrainingTime(epochs);
 		getMLP().setHiddenLayers("a,a,a,a,a,a,a,a,a,a");
-		
+		getMLP().setNormalizeNumericClass(false);
+	
 		try {
 			getMLP().buildClassifier(getInstances());
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 	
 	public double classify(Instance instance){
@@ -46,19 +50,19 @@ public class NeuralNetwork {
 		return predicted;
 	}
 	
-	private void setInstances(Instances instances) {
+	public void setInstances(Instances instances) {
 		this.instances = instances;
 	}
 	
-	private Instances getInstances() {
+	public Instances getInstances() {
 		return this.instances;
 	}
 
-	private void setMLP(MultilayerPerceptron mLP) {
-		MLP = mLP;
+	public void setMLP(MultilayerPerceptron mLP) {
+		this.MLP = mLP;
 	}
 
-	private MultilayerPerceptron getMLP() {
+	public MultilayerPerceptron getMLP() {
 		return this.MLP;
 	}
 

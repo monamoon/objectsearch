@@ -21,7 +21,9 @@ public class Utility {
 			out = new FileOutputStream (fileName);
 			OutputStreamWriter writer = new OutputStreamWriter(out);
 			BufferedWriter buff = new BufferedWriter(writer);
+			
 			buff.write(header);
+			buff.newLine();
 			for(Vector<Double> line : data){
 				String string = "";
 				for(int j=0; j<(line.size()-1); j++){
@@ -29,13 +31,18 @@ public class Utility {
 					string += curr + ",";
 				}
 				{
-					string += line.lastElement() + "\n";
+					string += line.lastElement();
 				}
-				System.out.print(string);
-				buff.write(string);
+//				System.out.print(string);
+				buff.append(string);
+				buff.newLine();
 				
 			}
-			buff.write( "\n%\n%\n%\n\n");
+			for(int i=0; i<5; i++){
+				buff.newLine();
+				buff.append("%");
+			}
+			buff.newLine();
 			if (out != null) writer.close();
 		}catch(IOException e){
 			System.out.println(e);
@@ -51,30 +58,34 @@ public class Utility {
 	
 	public static String getHeader(int size){
 		String line = null;
-		line = "@RELATION ObjectSearch"+"\n\n";
+		line = "@RELATION ObjectSearch"+"\n";
 		for(int i=0; i<(size-1); i++)
 			line += ("@ATTRIBUTE pixel"+i+"\t"+"REAL"+"\n");
-		line += ("@ATTRIBUTE class"+"\t"+"{0,1}"+"\n\n");
-		line += ("@DATA"+"\n");
+		line += ("@ATTRIBUTE class"+"\t"+"{0,1}"+"\n");
+		line += ("@DATA");
 		return line;
 	}
 	
 	public static Instances getInstances(String fileName) {
 		Instances instances = null;
 		try{
-			ArffLoader loader = new ArffLoader();
-		    loader.setFile(new File(fileName));
-		    instances = loader.getStructure();
-		    instances.setClassIndex(instances.numAttributes() - 1);
+			BufferedReader buff
+			   = new BufferedReader(new FileReader(fileName));	    
+			instances = new Instances(buff);
+			instances.setClassIndex(instances.numAttributes() - 1);
+		    
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return instances;
 	}
 	
 	public static NeuralNetwork neuralNetwork(String fileName) {
 		NeuralNetwork network = new NeuralNetwork();
+		
 		network.init(getInstances(fileName));
 		return network;
 	}
@@ -85,6 +96,7 @@ public class Utility {
 		//System.out.println(instances);
 		for(int i=0; i<instances.numInstances(); i++){
 			Instance instance = instances.instance(i);
+			
 			predicted.add(network.classify(instance));
 		}
 		
