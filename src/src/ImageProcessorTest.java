@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
+import classify.NeuralNetwork;
 import classify.SVMClassifier;
 
 import net.sf.javaml.core.Dataset;
@@ -19,8 +20,8 @@ public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException 
 	{
 		String path = System.getProperty("user.dir");
-		//extractObjects(path+"\\images\\train\\");
-		//extractObjects(path+"\\images\\test\\");
+//		extractObjects(path+"\\images\\train\\");
+//		extractObjects(path+"\\images\\test\\");
 		classify(path+"\\images");
 //		clusterObjects(path+"\\images");
 	}
@@ -201,7 +202,17 @@ public class ImageProcessorTest {
 //		svm.train(trainset);
 //		Vector<Object> predictions = svm.classify(testset);
 		
-		Utility.write("train.arff", trainset);
+		String trainFile = "train.arff";
+		String testFile = "test.arff";
+//		for(Vector<Double> current : trainset)
+//			System.out.println(current.size());
+//		System.out.println(testset);
+		Utility.write(trainFile, trainset);
+//		Utility.write(testFile, testset);
+		
+//		NeuralNetwork network = Utility.neuralNetwork(trainFile);
+//		Vector<Double> predicted = Utility.classify(testFile, network);
+//		System.out.println(predicted);
 	}
 	
 	

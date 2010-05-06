@@ -94,7 +94,7 @@ public class SVMClassifier {
 	}
 	
 	private void setupInstances(){
-		Vector<Instance> instances = new Vector<Instance>();
+			
 		for(Vector<Double> data : getSamples()){
 			double[] arrayData = new double[data.size()];
 			for(int i=0; i<(data.size()-1); i++)

@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="jai_codec.jar"/>
 	<classpathentry kind="lib" path="jai_core.jar"/>
 	<classpathentry kind="lib" path="libsvm.jar"/>
-	<classpathentry kind="lib" path="weka.jar"/>
+	<classpathentry kind="lib" path="weka.jar" sourcepath="C:/Program Files (x86)/Weka-3-7/weka-src.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
