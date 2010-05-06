@@ -144,60 +144,53 @@ public class ImageProcessorTest {
 
 	
 	public static void classify(String path) throws IOException{
-		Vector<Vector<Double>> trainset = new Vector<Vector<Double>>();
-		Vector<Vector<Double>> testset = new Vector<Vector<Double>>();
-		SVMClassifier svm = new SVMClassifier();
-		
-		//train SVM
-		String trainPath = path+"\\train\\preprocess\\";
-			
-		for(int j=0; j<10; j++){
-		for(int k=1;k<100;k++)
-		{
-			//positive examples
-			
-				String fileName = trainPath + "g"+k+/*"_"+j+*/".jpg";
-				if((new File(fileName)).exists())
-				{	
-				BufferedImage readImage = ImageIO.read(new File(fileName));
-				trainset.add(getData(readImage,1));
-				}
-				
-			//negative examples
-			
-				fileName = trainPath + "b"+k+/*"_"+j+*/".jpg";
-				if((new File(fileName)).exists())
-				{
-				BufferedImage readImage = ImageIO.read(new File(fileName));
-				trainset.add(getData(readImage,0));
-				}
-		}
-		}
-		
-		//test SVM
-		String testPath = path+"\\test\\preprocess\\";
-			
-		for(int k=1;k<100;k++)
-		{
-			//positive examples
-//			for(int j=0; j<100; j++){
-				String fileName = testPath + "g"+k+/*"_"+j+*/".jpg";
-				if((new File(fileName)).exists())
-				{
-				BufferedImage readImage = ImageIO.read(new File(fileName));
-				testset.add(getData(readImage,1));
-				}
-			//}
-			//negative examples
-			//for(int j=0; j<100; j++){
-				/*String*/ fileName = testPath + "b"+k+/*"_"+j+*/".jpg";
-				if((new File(fileName)).exists())
-				{
-				BufferedImage readImage = ImageIO.read(new File(fileName));
-				testset.add(getData(readImage,0));
-				}
-			//}
-		}
+//		Vector<Vector<Double>> trainset = new Vector<Vector<Double>>();
+//		Vector<Vector<Double>> testset = new Vector<Vector<Double>>();
+//		SVMClassifier svm = new SVMClassifier();
+//		
+//		//train SVM
+//		String trainPath = path+"\\train\\preprocess\\";
+//			
+//		for(int j=0; j<10; j++){
+//			for(int k=1;k<100;k++)
+//			{
+//			//positive examples
+//			
+//				String fileName = trainPath + "g"+k+/*"_"+j+*/".jpg";
+//				if((new File(fileName)).exists()){	
+//					BufferedImage readImage = ImageIO.read(new File(fileName));
+//					trainset.add(getData(readImage,1));
+//				}
+//				
+//			//negative examples
+//			
+//				fileName = trainPath + "b"+k+/*"_"+j+*/".jpg";
+//				if((new File(fileName)).exists()){
+//					BufferedImage readImage = ImageIO.read(new File(fileName));
+//					trainset.add(getData(readImage,0));
+//				}
+//			}
+//		}
+//		
+//		//test SVM
+//		String testPath = path+"\\test\\preprocess\\";
+//			
+//		for(int k=1;k<100;k++)
+//		{
+//			//positive examples
+//
+//			String fileName = testPath + "g"+k+/*"_"+j+*/".jpg";
+//			if((new File(fileName)).exists()){
+//				BufferedImage readImage = ImageIO.read(new File(fileName));
+//				testset.add(getData(readImage,1));
+//			}
+//
+//			/*String*/ fileName = testPath + "b"+k+/*"_"+j+*/".jpg";
+//			if((new File(fileName)).exists()){
+//				BufferedImage readImage = ImageIO.read(new File(fileName));
+//				testset.add(getData(readImage,0));
+//			}
+//		}
 		
 //		svm.train(trainset);
 //		Vector<Object> predictions = svm.classify(testset);
@@ -207,12 +200,12 @@ public class ImageProcessorTest {
 //		for(Vector<Double> current : trainset)
 //			System.out.println(current.size());
 //		System.out.println(testset);
-		Utility.write(trainFile, trainset);
+//		Utility.write(trainFile, trainset);
 //		Utility.write(testFile, testset);
 		
-//		NeuralNetwork network = Utility.neuralNetwork(trainFile);
-//		Vector<Double> predicted = Utility.classify(testFile, network);
-//		System.out.println(predicted);
+		NeuralNetwork network = Utility.neuralNetwork("cpu.arff");
+		Vector<Double> predicted = Utility.classify("cpu.arff", network);
+		System.out.println(predicted);
 	}
 	
 	
