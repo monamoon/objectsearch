@@ -60,8 +60,8 @@ public class Utility {
 		String line = null;
 		line = "@RELATION ObjectSearch"+"\n";
 		for(int i=0; i<(size-1); i++)
-			line += ("@ATTRIBUTE pixel"+i+"\t"+"REAL"+"\n");
-		line += ("@ATTRIBUTE class"+"\t"+"{0,1}"+"\n");
+			line += ("@ATTRIBUTE pixel"+i+"\t"+"REAL"+"\t"+"{0.0,1.0}"+"\n");
+		line += ("@ATTRIBUTE class"+"\t"+"{0.0,1.0}"+"\n");
 		line += ("@DATA");
 		return line;
 	}
