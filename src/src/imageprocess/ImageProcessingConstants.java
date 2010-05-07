@@ -3,8 +3,8 @@ package imageprocess;
 public class ImageProcessingConstants {
 	static private final int scaleWidth = 1000;
 	static private final int scaleHeight = 800;
-	static private final int inputWidth = 100;
-	static private final int inputHeight = 80;
+	static private final int inputWidth = 25;
+	static private final int inputHeight = 20;
 	static private final int objectThresholdLow = (scaleWidth *scaleWidth*5)/100;
 	static private final int objectThresholdHigh = (scaleWidth *scaleWidth*50)/100;
 	static private final double monoChromeThreshold = 0.01;
