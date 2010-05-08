@@ -18,16 +18,25 @@ import som.ImageSom;
 
 public class ImageProcessorTest {
 	static String imgObj = "bird";
-	public static void main(String[] args) throws IOException 
+	public static void main(String[] args) throws IOException, InterruptedException 
 	{
-		getLineImage()
+		ImageProcessor ip = new ImageProcessor();
+		BufferedImage orig = ImageIO.read(new File("C:\\Users\\kris\\workspace\\objectsearch\\images\\bird\\test\\0201.jpg"));
+		BufferedImage lines = ip.getLineImage(orig);
+		ImageIO.write(lines, "jpg", new File("C:\\Users\\kris\\workspace\\objectsearch\\images\\bird\\test\\0201_line.jpg"));
+		BufferedImage circles = ip.getCircleImage(orig);
+		ImageIO.write(circles, "jpg", new File("C:\\Users\\kris\\workspace\\objectsearch\\images\\bird\\test\\0201_circle.jpg"));
+		BufferedImage corners = ip.getCornerImage(orig);
+		ImageIO.write(corners, "jpg", new File("C:\\Users\\kris\\workspace\\objectsearch\\images\\bird\\test\\0201_corner.jpg"));
+
+		
 //		String path = System.getProperty("user.dir");
 //		extractObjects(path+"\\images\\"+imgObj+"\\train\\");
 //		extractObjects(path+"\\images\\"+imgObj+"\\test\\");
 ////		classify(path+"\\images");
 //		clusterObjects(path+"\\images");
 	}
-	
+
 	public static void extractObjects(String filePath)
 	{
 		ImageProcessor ip = new ImageProcessor();

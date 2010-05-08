@@ -9,11 +9,11 @@ public class Circles {
 		int width;
 		int height;
 		int[] acc;
-		int accSize=30;
+		int accSize=15;
 		int[] results;
 		int r;
 
-		public void Circles() {
+		public Circles() {
 			progress=0;
 		}
 
@@ -24,11 +24,8 @@ public class Circles {
 			input = new int[width*height];
 			output = new int[width*height];
 			input=inputIn;
-			for(int x=0;x<width;x++) {
-				for(int y=0;y<height;y++) {
-					output[x + (width*y)] = 0xff000000;
-				}
-			}
+			for(int x=0;x<width*height;x++) 
+				output[x] = 0xff000000;
 		}
 		public void setLines(int lines) {
 			accSize=lines;		
@@ -39,11 +36,9 @@ public class Circles {
 			// for polar we need accumulator of 180degress * the longest length in the image
 			int rmax = (int)Math.sqrt(width*width + height*height);
 			acc = new int[width * height];
-			for(int x=0;x<width;x++) {
-				for(int y=0;y<height;y++) {
-					acc[x*width+y] =0 ;
-				}
-			}			
+			for(int x=0;x<width*height;x++)
+					acc[x] =0 ;
+							
 			int x0, y0;
 			double t;
 			progress=0;
