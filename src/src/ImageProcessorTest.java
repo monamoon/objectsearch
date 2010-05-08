@@ -1,5 +1,6 @@
 
 
+import featureextraction.FeatureExtractor;
 import imageprocess.ImageProcessor;
 
 import java.awt.image.BufferedImage;
@@ -19,10 +20,11 @@ public class ImageProcessorTest {
 	static String imgObj = "bird";
 	public static void main(String[] args) throws IOException 
 	{
-		String path = System.getProperty("user.dir");
-		extractObjects(path+"\\images\\"+imgObj+"\\train\\");
-		extractObjects(path+"\\images\\"+imgObj+"\\test\\");
-//		classify(path+"\\images");
+		getLineImage()
+//		String path = System.getProperty("user.dir");
+//		extractObjects(path+"\\images\\"+imgObj+"\\train\\");
+//		extractObjects(path+"\\images\\"+imgObj+"\\test\\");
+////		classify(path+"\\images");
 //		clusterObjects(path+"\\images");
 	}
 	

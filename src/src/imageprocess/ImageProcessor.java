@@ -327,10 +327,17 @@ public class ImageProcessor {
 	}
 	public BufferedImage getScaledImage(BufferedImage bi, int width, int height)
 	{
-		Image scaledImage =  bi.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		bufferedImage.createGraphics().drawImage(scaledImage,0,0,null);
-		return bufferedImage;
+		try
+		{
+			Image scaledImage =  bi.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+			BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			bufferedImage.createGraphics().drawImage(scaledImage,0,0,null);
+			return bufferedImage;
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 	
 	public Vector<BufferedImage> getSegments(BufferedImage normalbi, BufferedImage segBi) throws IOException

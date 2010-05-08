@@ -1,16 +1,4 @@
 package featureextraction;
-import java.awt.*;
-import java.awt.image.*;
-import java.applet.*;
-import java.net.*;
-import java.io.*;
-import java.lang.Math;
-import java.util.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.JApplet;
-import javax.imageio.*;
-import javax.swing.event.*;
 
 public class sobel {
 
@@ -23,7 +11,7 @@ public class sobel {
 		int height;
 		double[] direction;
 
-		public void sobel() {
+		public sobel() {
 			progress=0;
 		}
 

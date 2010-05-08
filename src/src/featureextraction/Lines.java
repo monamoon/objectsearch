@@ -1,18 +1,6 @@
 package featureextraction;
-import java.awt.*;
-import java.awt.image.*;
-import java.applet.*;
-import java.net.*;
-import java.io.*;
-import java.lang.Math;
-import java.util.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.JApplet;
-import javax.imageio.*;
-import javax.swing.event.*;
 
-public class lineHough {
+public class Lines {
 
 		int[] input;
 		int[] output;
@@ -24,7 +12,7 @@ public class lineHough {
 		int accSize=30;
 		int[] results;
 
-		public void lineHough() {
+		public Lines() {
 			progress=0;
 		}
 
