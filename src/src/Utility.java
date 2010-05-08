@@ -102,4 +102,9 @@ public class Utility {
 		
 		return predicted;
 	}
+	public static File[] listFiles(String directory)
+	{
+		File dir = new File(directory);
+		return dir.listFiles(); 
+	}
 }
