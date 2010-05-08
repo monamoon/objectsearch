@@ -186,7 +186,11 @@ public class ImageProcessor {
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.awt.image.MemoryImageSource;
+import java.awt.image.PixelGrabber;
+import java.awt.image.WritableRaster;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -198,6 +202,11 @@ import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
+
+import featureextraction.Lines;
+import featureextraction.hystThresh;
+import featureextraction.nonMaxSuppression;
+import featureextraction.sobel;
 
 class bgColor
 {
@@ -339,7 +348,39 @@ public class ImageProcessor {
 			return null;
 		}
 	}
+	public BufferedImage getLineImage(BufferedImage bi) throws InterruptedException
+	{
+		int width = bi.getWidth();
+		int height = bi.getHeight();
+		int []orig=new int[width*height];
+		PixelGrabber grabber = new PixelGrabber(bi, 0, 0, width, height, orig, 0, width);
+		grabber.grabPixels();
+		
+		sobel sobelObject = new sobel();
+		sobelObject.init(orig,width,height);
+		orig = sobelObject.process();
+		
+		double direction[] = new double[width*height];
+		direction=sobelObject.getDirection();
+		
+		nonMaxSuppression nonmaxObject = new nonMaxSuppression();
+		nonmaxObject.init(orig,direction,width,height);
+		orig = nonmaxObject.process();
 	
+		hystThresh hystThreshObject = new hystThresh();
+		hystThreshObject.init(orig,width,height, 25,50);
+		orig = hystThreshObject.process();
+		
+		Lines lines = new Lines();
+		lines.init(orig, width, height);
+		orig = lines.process();
+		
+		BufferedImage lineImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Image piximg = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(width, height, orig,0,width));
+		lineImage.getGraphics().drawImage(piximg, 0, 0, null);
+		return lineImage; 
+		
+    }
 	public Vector<BufferedImage> getSegments(BufferedImage normalbi, BufferedImage segBi) throws IOException
 	{
 		Vector<Segment> segments = new Vector<Segment>();
@@ -524,7 +565,7 @@ public class ImageProcessor {
 	 *
 	 */
 
-	BufferedImage sobelEdgeDetection2(BufferedImage img) 
+	public BufferedImage sobelEdgeDetection2(BufferedImage img) 
 	{
 
 		BufferedImage edged = new BufferedImage(img.getWidth(),img.getHeight(),
