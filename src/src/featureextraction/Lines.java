@@ -10,7 +10,7 @@ public class Lines {
 		int width;
 		int height;
 		int[] acc;
-		int accSize=50;
+		int accSize=15;
 		int[] results;
 
 		public Lines() {

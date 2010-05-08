@@ -203,7 +203,9 @@ import javax.media.jai.JAI;
 import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
 
+import featureextraction.Circles;
 import featureextraction.Lines;
+import featureextraction.Corners;
 import featureextraction.hystThresh;
 import featureextraction.nonMaxSuppression;
 import featureextraction.sobel;
@@ -348,6 +350,58 @@ public class ImageProcessor {
 			return null;
 		}
 	}
+	public BufferedImage getCircleImage(BufferedImage bi) throws InterruptedException
+	{
+		int width = bi.getWidth();
+		int height = bi.getHeight();
+		int []orig=new int[width*height];
+		PixelGrabber grabber = new PixelGrabber(bi, 0, 0, width, height, orig, 0, width);
+		grabber.grabPixels();
+		
+		sobel sobelObject = new sobel();
+		sobelObject.init(orig,width,height);
+		orig = sobelObject.process();
+		
+		double direction[] = new double[width*height];
+		direction=sobelObject.getDirection();
+		
+		nonMaxSuppression nonmaxObject = new nonMaxSuppression();
+		nonmaxObject.init(orig,direction,width,height);
+		orig = nonmaxObject.process();
+	
+		hystThresh hystThreshObject = new hystThresh();
+		hystThreshObject.init(orig,width,height, 25,50);
+		orig = hystThreshObject.process();
+		
+		Circles circles = new Circles();
+		circles.init(orig, width, height,30 );
+		orig = circles.process();
+		
+		BufferedImage circleImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Image piximg = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(width, height, orig,0,width));
+		circleImage.getGraphics().drawImage(piximg, 0, 0, null);
+		return circleImage; 
+		
+    }
+	public BufferedImage getCornerImage(BufferedImage bi) throws InterruptedException
+	{
+		int width = bi.getWidth();
+		int height = bi.getHeight();
+		int []orig=new int[width*height];
+		PixelGrabber grabber = new PixelGrabber(bi, 0, 0, width, height, orig, 0, width);
+		grabber.grabPixels();
+	
+		Corners harrisObj = new Corners();
+		harrisObj.init(orig,width, height, 0.14);
+		orig=harrisObj.process();
+
+		BufferedImage cornerImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Image piximg = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(width, height, orig,0,width));
+		cornerImage.getGraphics().drawImage(piximg, 0, 0, null);
+		return cornerImage; 
+	
+}
+
 	public BufferedImage getLineImage(BufferedImage bi) throws InterruptedException
 	{
 		int width = bi.getWidth();
@@ -534,7 +588,7 @@ public class ImageProcessor {
 	}
 	public BufferedImage processSegment(BufferedImage bi) throws IOException 
 	{
-	//	BufferedImage edgeBuff = sobelEdgeDetection2(bi);
+		//		BufferedImage edgeBuff = sobelEdgeDetection2(bi);
 		//		ImageIO.write(edgeBuff, "jpg",new File(filePath+"_1.jpg"));
 		BufferedImage edgeImage = sobelEdgeDetection(bi);
 		BufferedImage cropBuff = cropImage(edgeImage);
@@ -565,84 +619,84 @@ public class ImageProcessor {
 	 *
 	 */
 
-	public BufferedImage sobelEdgeDetection2(BufferedImage img) 
-	{
-
-		BufferedImage edged = new BufferedImage(img.getWidth(),img.getHeight(),
-				BufferedImage.TYPE_INT_RGB);
-
-		float[] hx = new float[]{-1,0,1,
-				-2,0,2,
-				-1,0,1};
-
-		float[] hy = new float[]{-1,-2,-1,
-				0, 0, 0,
-				1, 2, 1};
-
-		int[] rgbX = new int[3]; int[] rgbY = new int[3];
-
-		//ignore border pixels strategy
-		for(int x = 1; x < img.getWidth()-1; x++)
-			for(int y = 1; y < img.getHeight()-1; y++) {
-				convolvePixel(hx,3,3, img, x, y, rgbX);
-				convolvePixel(hy,3,3, img, x, y, rgbY);
-
-				//instead of using sqrt function for eculidean distance
-				//just do an estimation
-				int r = Math.abs(rgbX[0]) + Math.abs(rgbY[0]);
-				int g = Math.abs(rgbX[1]) + Math.abs(rgbY[1]);
-				int b = Math.abs(rgbX[2]) + Math.abs(rgbY[2]);
-
-				//range check
-				if(r > 255) r = 255;
-				if(g > 255) g = 255;
-				if(b > 255) b = 255;
-
-				edged.setRGB(x, y,(r<<16)|(g<<8)|b);
-			}
-		return edged;
-	}
-	private static int[] convolvePixel(float[] kernel, int kernWidth, int kernHeight,
-			BufferedImage src, int x, int y, int[] rgb) {
-		if(rgb == null) rgb = new int[3];
-
-		int halfWidth = kernWidth/2;
-		int halfHeight = kernHeight/2;
-
-		for(int component = 0; component < 3; component++) {
-			float sum = 0;
-			for(int i = 0; i < kernel.length; i++) {
-				int row = (i/kernWidth)-halfWidth;  //current row in kernel
-				int column = (i-(kernWidth*row))-halfHeight; //current column in kernel
-
-				//range check
-				if(x-row < 0 || x-row > src.getWidth()) continue;
-				if(y-column < 0 || y-column > src.getHeight()) continue;
-
-				int srcRGB =src.getRGB(x-row,y-column);
-				sum = sum + kernel[i]*((srcRGB>>(16-8*component))&0xff);
-			}
-			rgb[component] = (int) sum;
-		}
-		return rgb;
-	}
-	BufferedImage sobelEdgeDetection(BufferedImage bi) 
-	{
-
-
-		// Create a constant array with the Sobel horizontal kernel.
-		float[] kernelMatrix = { -1, -2, -1,
-				0,  0,  0,
-				1,  2,  1 };
-		// Read the image.
-		PlanarImage input = PlanarImage.wrapRenderedImage(bi);
-		// Create the kernel using the array.
-		KernelJAI kernel = new KernelJAI(3,3,kernelMatrix);
-		// Run the convolve operator, creating the processed image.
-		PlanarImage output = JAI.create("convolve", input, kernel);
-
-		return output.getAsBufferedImage();
-	}
+//	public BufferedImage sobelEdgeDetection2(BufferedImage img) 
+//	{
+//
+//		BufferedImage edged = new BufferedImage(img.getWidth(),img.getHeight(),
+//				BufferedImage.TYPE_INT_RGB);
+//
+//		float[] hx = new float[]{-1,0,1,
+//				-2,0,2,
+//				-1,0,1};
+//
+//		float[] hy = new float[]{-1,-2,-1,
+//				0, 0, 0,
+//				1, 2, 1};
+//
+//		int[] rgbX = new int[3]; int[] rgbY = new int[3];
+//
+//		//ignore border pixels strategy
+//		for(int x = 1; x < img.getWidth()-1; x++)
+//			for(int y = 1; y < img.getHeight()-1; y++) {
+//				convolvePixel(hx,3,3, img, x, y, rgbX);
+//				convolvePixel(hy,3,3, img, x, y, rgbY);
+//
+//				//instead of using sqrt function for eculidean distance
+//				//just do an estimation
+//				int r = Math.abs(rgbX[0]) + Math.abs(rgbY[0]);
+//				int g = Math.abs(rgbX[1]) + Math.abs(rgbY[1]);
+//				int b = Math.abs(rgbX[2]) + Math.abs(rgbY[2]);
+//
+//				//range check
+//				if(r > 255) r = 255;
+//				if(g > 255) g = 255;
+//				if(b > 255) b = 255;
+//
+//				edged.setRGB(x, y,(r<<16)|(g<<8)|b);
+//			}
+//		return edged;
+//	}
+//	private static int[] convolvePixel(float[] kernel, int kernWidth, int kernHeight,
+//			BufferedImage src, int x, int y, int[] rgb) {
+//		if(rgb == null) rgb = new int[3];
+//
+//		int halfWidth = kernWidth/2;
+//		int halfHeight = kernHeight/2;
+//
+//		for(int component = 0; component < 3; component++) {
+//			float sum = 0;
+//			for(int i = 0; i < kernel.length; i++) {
+//				int row = (i/kernWidth)-halfWidth;  //current row in kernel
+//				int column = (i-(kernWidth*row))-halfHeight; //current column in kernel
+//
+//				//range check
+//				if(x-row < 0 || x-row > src.getWidth()) continue;
+//				if(y-column < 0 || y-column > src.getHeight()) continue;
+//
+//				int srcRGB =src.getRGB(x-row,y-column);
+//				sum = sum + kernel[i]*((srcRGB>>(16-8*component))&0xff);
+//			}
+//			rgb[component] = (int) sum;
+//		}
+//		return rgb;
+//	}
+//	BufferedImage sobelEdgeDetection(BufferedImage bi) 
+//	{
+//
+//
+//		// Create a constant array with the Sobel horizontal kernel.
+//		float[] kernelMatrix = { -1, -2, -1,
+//				0,  0,  0,
+//				1,  2,  1 };
+//		// Read the image.
+//		PlanarImage input = PlanarImage.wrapRenderedImage(bi);
+//		// Create the kernel using the array.
+//		KernelJAI kernel = new KernelJAI(3,3,kernelMatrix);
+//		// Run the convolve operator, creating the processed image.
+//		PlanarImage output = JAI.create("convolve", input, kernel);
+//
+//		return output.getAsBufferedImage();
+//	}
 	
 	public int getNormalHeight(){
 		return this.normalHeight;
