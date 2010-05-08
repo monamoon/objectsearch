@@ -1,5 +1,6 @@
 package featureextraction;
 
+
 public class Lines {
 
 		int[] input;
@@ -9,7 +10,7 @@ public class Lines {
 		int width;
 		int height;
 		int[] acc;
-		int accSize=30;
+		int accSize=50;
 		int[] results;
 
 		public Lines() {
@@ -21,12 +22,11 @@ public class Lines {
 			height=heightIn;
 			input = new int[width*height];
 			output = new int[width*height];
+			
 			input=inputIn;
-			for(int x=0;x<width;x++) {
-				for(int y=0;y<height;y++) {
-					output[x*width+y] = 0xff000000;
-				}
-			}
+			for(int x=0;x<width*height;x++) 
+				output[x] = 0xff000000;
+			
 		}
 		public void setLines(int lines) {
 			accSize=lines;		
