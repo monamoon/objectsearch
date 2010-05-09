@@ -14,7 +14,6 @@ public class Utility {
 		 throws IOException {
 		File file = new File(fileName);
 		int size = data.get(0).size();
-		System.out.println(size);
 		String header = getHeader(size);
 		
 		BufferedWriter buff =  new BufferedWriter(new FileWriter(file));
