@@ -17,26 +17,42 @@ import som.ImageSom;
 import classify.SVMClassifier;
 
 public class ImageProcessorTest {
+	public static void initAnalysis(String path)
+	{
+		Utility.cleanup(path+"\\positive\\train"); 
+		Utility.cleanup(path+"\\positive\\test");
+		Utility.cleanup(path+"\\negative\\train"); 
+		Utility.cleanup(path+"\\negative\\test");
+		
+		new File(path+"test.arff").delete();
+		new File(path+"train.arff").delete();
+		
+	}
+	public static void runImageAnalysis(String repository, String dumpPath)
+	{
+		extractObjects(repository+"\\positive\\",dumpPath+"\\positive\\");
+		extractObjects(repository+"\\negative\\",dumpPath+"\\negative\\");
+	}
+	public static void createDataset(String dumpPath) throws InterruptedException, IOException
+	{
+		getDataset(dumpPath, "test", ImageProcessingConstants.getFeaturetype());
+		getDataset(dumpPath, "train", ImageProcessingConstants.getFeaturetype());
+	}
 	public static void main(String[] args) throws IOException, InterruptedException 
 	{
 		String path = System.getProperty("user.dir");
-//		String posFolder = path+"\\images\\positive\\"; 
-//		String negFolder =  path+"\\images\\negative\\";
-//		String imgFolder = path+"\\dataset\\"
-//								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype()+"\\";
+		String dumpPath = path+"\\images\\"
+								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype(); 
+		String repository = path+"\\dataset\\"
+								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype();
+		if(ImageProcessingConstants.isdoAnalysis())
+		{
+			initAnalysis(dumpPath);
+			runImageAnalysis(repository,dumpPath);
+		}
 		
-//		Utility.cleanup(posFolder+"train"); 
-//		Utility.cleanup(posFolder+"test");
-//		Utility.cleanup(posFolder+"train"); 
-//		Utility.cleanup(posFolder+"test");
-//		
-//		extractObjects(imgFolder+"positive\\",posFolder);
-//		extractObjects(imgFolder+"negative\\",negFolder);
+		createDataset(dumpPath);
 		
-		Vector<Vector<Double>> data = getDataset(path + "\\images\\", "test");
-		Utility.write(path + "test.arff", data);
-		data = getDataset(path + "\\images\\", "train");
-		Utility.write(path + "train.arff", data);
 	}
 	public static BufferedImage cleanupImage(BufferedImage bi) throws IOException
 	{
@@ -50,7 +66,8 @@ public class ImageProcessorTest {
 		if(segments.size()==0)
 			return null;
 		BufferedImage masterImage = ip.getMasterImage(normalBuff, segments);
-		return masterImage;
+		BufferedImage processedImage = ip.normalizeImage(masterImage);
+		return processedImage;
 	}
 	public static void extractObjects(String srcPath, String destPath)
 	{
@@ -81,22 +98,31 @@ public class ImageProcessorTest {
 			}
 		}		
 	}
-	public static Vector<Vector<Double>> getDataset(String dumpPath,String type) throws InterruptedException, IOException
+	public static void getDataset(String dumpPath,String type,FeatureType ft) throws InterruptedException, IOException
 	{
-		Vector<Vector<Double>> dataset = new Vector<Vector<Double>>();
 		String posFolder = dumpPath+"positive\\"+type;
 		String negFolder = dumpPath+"negative\\"+type;
+		String dataFile = dumpPath+type+ft+".arff";
 		
-		FeatureType ft = ImageProcessingConstants.getFeaturetype();
+		boolean firstSample = true;
+				
 		File [] posFiles = Utility.listFiles(posFolder);
 		File [] negFiles = Utility.listFiles(negFolder);
+		
 		for(int i=0;i<posFiles.length && i<negFiles.length;i++)
 		{
 			if(i<posFiles.length)
 			{
 				try {
+					System.out.println(posFiles[i].getPath());
 					BufferedImage posB = ImageIO.read(posFiles[i]);
-					dataset.add(FeatureExtractor.getFeatureVector(posB, 1, ft));
+					Vector<Double> fv = FeatureExtractor.getFeatureVector(posB, 1, ft);
+					if(firstSample && fv!=null)
+					{
+						firstSample = false;
+						Utility.initDataset(dataFile, fv.size());
+					}
+					Utility.addSample(dataFile, fv);
 				}
 				catch(Exception e) {
 				}
@@ -104,14 +130,20 @@ public class ImageProcessorTest {
 			if(i<negFiles.length)
 			{
 				try {
+					System.out.println(negFiles[i].getPath());
 					BufferedImage negB = ImageIO.read(negFiles[i]);
-					dataset.add(FeatureExtractor.getFeatureVector(negB, 0, ft));
+					Vector<Double> fv = FeatureExtractor.getFeatureVector(negB, 1, ft);
+					if(firstSample && fv!=null)
+					{
+						firstSample = false;
+						Utility.initDataset(dataFile, fv.size());
+					}
+					Utility.addSample(dataFile, fv);
 				}
 				catch(Exception e) {
 				}
 			}
 		}
-		return dataset;
 	}
 	public static void clusterObjects(String dir) throws IOException, InterruptedException
 	{
@@ -240,3 +272,4 @@ public class ImageProcessorTest {
 		ImageIO.write(bi,"jpg",new File(filePath));
 	}
 }
+ 

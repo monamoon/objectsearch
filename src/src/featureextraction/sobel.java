@@ -1,5 +1,6 @@
 package featureextraction;
 
+
 public class sobel {
 
 		int[] input;
@@ -24,9 +25,10 @@ public class sobel {
 			input=original;
 		}
 		public int[] process() {
-			float[] GY = new float[width*height];
-			float[] GX = new float[width*height];
-			int[] total = new int[width*height];
+			float [] GX = new float[width*height];
+			float [] GY = new float[width*height];
+			int [] total = new int[width*height];
+						
 			progress=0;
 			int sum=0;
 			int max=0;
