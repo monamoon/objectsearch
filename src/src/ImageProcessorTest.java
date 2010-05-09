@@ -2,6 +2,7 @@
 
 import featureextraction.FeatureExtractor;
 import featureextraction.FeatureType;
+import imageprocess.ImageProcessingConstants;
 import imageprocess.ImageProcessor;
 
 import java.awt.image.BufferedImage;
@@ -18,54 +19,52 @@ import net.sf.javaml.core.Dataset;
 import som.ImageSom;
 
 public class ImageProcessorTest {
-	static String imgObj = "bird";
 	public static void main(String[] args) throws IOException, InterruptedException 
 	{
 		String path = System.getProperty("user.dir");
-		Utility.cleanup(path+"\\images\\test\\positive");
-		Utility.cleanup(path+"\\images\\test\\negative");
-		Utility.cleanup(path+"\\images\\train\\positive");
-		Utility.cleanup(path+"\\images\\train\\negative");
-		//Utility.write("C:\\Users\\kris\\workspace\\objectsearch\\data.txt",data);
+		String posFolder = path+"\\images\\positive\\"; 
+		String negFolder =  path+"\\images\\negative\\";
+		String imgFolder = path+"\\dataset\\"
+								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype()+"\\";
 		
+		Utility.cleanup(posFolder+"train"); 
+		Utility.cleanup(posFolder+"test");
+		Utility.cleanup(posFolder+"train"); 
+		Utility.cleanup(posFolder+"test");
 		
-//		
-//		extractObjects(path+"\\images\\"+imgObj+"\\train\\");
-//		extractObjects(path+"\\images\\"+imgObj+"\\test\\");
-////		classify(path+"\\images");
-//		clusterObjects(path+"\\images");
+		extractObjects(imgFolder+"positive",posFolder);
+		extractObjects(imgFolder+"negative",negFolder);
 	}
-
-	public static void extractObjects(String filePath)
+	public static BufferedImage cleanupImage(BufferedImage bi) throws IOException
 	{
 		ImageProcessor ip = new ImageProcessor();
-		File [] imgFiles = Utility.listFiles(filePath+"positive\\");
-		System.out.println(filePath+"positive\\");
-		String path = System.getProperty("user.dir");
-		String traindata = path+"\\images\\train\\";
-		String testdata = path+"\\images\\test\\";
+		BufferedImage normalBuff = ip.getScaledImage(bi,ip.getNormalWidth(),ip.getNormalHeight());
+		if(normalBuff==null)
+			return null;
+		BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
+		BufferedImage preprocessed = ip.removeBG(segmentImage);
+		Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
+		if(segments.size()==0)
+			return null;
+		BufferedImage masterImage = ip.getMasterImage(normalBuff, segments);
+		return masterImage;
+	}
+	public static void extractObjects(String srcPath, String destPath)
+	{
+
+		File [] imgFiles = Utility.listFiles(srcPath);
+		
 		for(int i=0;i<imgFiles.length;i++)
 		{
-			System.out.println(imgFiles[i]);
 			try
 			{
-				
 				BufferedImage readImage = ImageIO.read(imgFiles[i]);
-				BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
-				if(normalBuff==null)
-					continue;
-				BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
-				BufferedImage preprocessed = ip.removeBG(segmentImage);
-				Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
-				if(segments.size()==0)
-					continue;
-				
-				BufferedImage master1 = ip.getMasterImage(normalBuff, segments);
-				BufferedImage master2 = ip.processSegment(master1);
-				BufferedImage master3 = ip.getMirrorImage(master2);
-				
-				writeImageFile(master2, traindata+"preprocess/g" +i+".jpg");
-				writeImageFile(master3, traindata+"preprocess/g" +(1000-i)+".jpg");
+				BufferedImage masterImage = cleanupImage(readImage);
+				if(masterImage != null)
+				{
+					writeImageFile(masterImage, destPath+i+".jpg");
+					ImageProcessor ip = new ImageProcessor();
+					writeImageFile(ip.getMirrorImage(masterImage), traindata+"preprocess/g" +(1000-i)+".jpg");
 				
 				for(int j=0;j<segments.size();j++)
 				{
