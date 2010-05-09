@@ -12,28 +12,26 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
-import classify.NeuralNetwork;
-import classify.SVMClassifier;
-
 import net.sf.javaml.core.Dataset;
 import som.ImageSom;
+import classify.SVMClassifier;
 
 public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException, InterruptedException 
 	{
 		String path = System.getProperty("user.dir");
-		String posFolder = path+"\\images\\positive\\"; 
-		String negFolder =  path+"\\images\\negative\\";
-		String imgFolder = path+"\\dataset\\"
-								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype()+"\\";
+//		String posFolder = path+"\\images\\positive\\"; 
+//		String negFolder =  path+"\\images\\negative\\";
+//		String imgFolder = path+"\\dataset\\"
+//								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype()+"\\";
 		
-		Utility.cleanup(posFolder+"train"); 
-		Utility.cleanup(posFolder+"test");
-		Utility.cleanup(posFolder+"train"); 
-		Utility.cleanup(posFolder+"test");
-		
-		extractObjects(imgFolder+"positive\\",posFolder);
-		extractObjects(imgFolder+"negative\\",negFolder);
+//		Utility.cleanup(posFolder+"train"); 
+//		Utility.cleanup(posFolder+"test");
+//		Utility.cleanup(posFolder+"train"); 
+//		Utility.cleanup(posFolder+"test");
+//		
+//		extractObjects(imgFolder+"positive\\",posFolder);
+//		extractObjects(imgFolder+"negative\\",negFolder);
 		
 		Vector<Vector<Double>> data = getDataset(path + "\\images\\", "test");
 		Utility.write(path + "test.arff", data);
@@ -96,13 +94,21 @@ public class ImageProcessorTest {
 		{
 			if(i<posFiles.length)
 			{
-				BufferedImage posB = ImageIO.read(posFiles[i]);
-				dataset.add(FeatureExtractor.getFeatureVector(posB, 1, ft));
+				try {
+					BufferedImage posB = ImageIO.read(posFiles[i]);
+					dataset.add(FeatureExtractor.getFeatureVector(posB, 1, ft));
+				}
+				catch(Exception e) {
+				}
 			}
 			if(i<negFiles.length)
 			{
-				BufferedImage negB = ImageIO.read(negFiles[i]);
-				dataset.add(FeatureExtractor.getFeatureVector(negB, 0, ft));
+				try {
+					BufferedImage negB = ImageIO.read(negFiles[i]);
+					dataset.add(FeatureExtractor.getFeatureVector(negB, 0, ft));
+				}
+				catch(Exception e) {
+				}
 			}
 		}
 		return dataset;
