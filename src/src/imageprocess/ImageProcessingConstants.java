@@ -1,10 +1,12 @@
 package imageprocess;
 
+import featureextraction.FeatureType;
+
 public class ImageProcessingConstants {
 	static private final int scaleWidth = 1000;
 	static private final int scaleHeight = 800;
-	static private final int inputWidth = 25;
-	static private final int inputHeight = 20;
+	static private final int inputWidth = 100;
+	static private final int inputHeight = 80;
 	static private final int objectThresholdLow = (scaleWidth *scaleWidth*5)/100;
 	static private final int objectThresholdHigh = (scaleWidth *scaleWidth*50)/100;
 	static private final double monoChromeThreshold = 0.01;
@@ -12,7 +14,27 @@ public class ImageProcessingConstants {
 	static private final int bgThreshold = 100;
 	static private final int centerThreshold = 100;
 	static private final int featureCount = 15;
+	static private final int trainCount= 15;
+	static private final FeatureType featureType= FeatureType.FULLBITMAP;
 	
+	public static FeatureType getFeaturetype() {
+		return featureType;
+	}
+	static private final String objectType = "Ship";
+	static private final String identificationType = "generic identification";
+	
+	public static int getTraincount() {
+		return trainCount;
+	}
+	
+	public static String getObjecttype() {
+		return objectType;
+	}
+	
+	public static String getIdentificationtype() {
+		return identificationType;
+	}
+
 	public static int getFeaturecount() {
 		return featureCount;
 	}
