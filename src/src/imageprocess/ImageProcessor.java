@@ -12,9 +12,6 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 
@@ -272,13 +269,13 @@ public class ImageProcessor {
 		}	
 		return masterImage;
 	}
-	public BufferedImage getMirrorImage(BufferedImage bi)
+	public static BufferedImage getMirrorImage(BufferedImage bi)
 	{
-	  BufferedImage buff = this.getScaledImage(bi, bi.getWidth(), bi.getHeight());
-	  for(int j=0;j<buff.getHeight();j++)
-		  for(int i=0;i<buff.getWidth();i++)
-		  	  buff.setRGB(i,j,bi.getRGB(bi.getWidth()-i-1,j));
-	  return buff;
+	  BufferedImage mirrorImage = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
+	  for(int j=0;j<bi.getHeight();j++)
+		  for(int i=0;i<bi.getWidth();i++)
+		  	  mirrorImage.setRGB(i,j,bi.getRGB(bi.getWidth()-i-1,j));
+	  return mirrorImage;
 	}
 	public BufferedImage getSegmentedImage(BufferedImage bi) throws IOException
 	{
@@ -330,15 +327,7 @@ public class ImageProcessor {
 		}
 		return buff;
 	}
-	public BufferedImage normalizeImage(BufferedImage bi) throws IOException 
-	{
-		BufferedImage cropBuff = cropImage(bi);
-		BufferedImage scaledBuff = getScaledImage(cropBuff,width,height);
-		return scaledBuff;
-	}
-
-
-		
+			
 	public int getNormalHeight(){
 		return this.normalHeight;
 	}
