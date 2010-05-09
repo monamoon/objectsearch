@@ -18,8 +18,12 @@ public class Utility {
 	public static void addSample(BufferedWriter buff, Vector<Double> data) throws IOException
 	{
 		String str = "";
-		for(double val : data)
+		for(int i=0; i<(data.size()-1); i++){
+			double val = data.get(i);
 			str += val + ",";
+		}
+		str += data.lastElement();
+			
 		buff.append(str);
 		buff.newLine();	
 	}
