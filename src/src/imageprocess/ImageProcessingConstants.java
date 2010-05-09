@@ -11,7 +11,12 @@ public class ImageProcessingConstants {
 	static private final double srmThreshold = 5;
 	static private final int bgThreshold = 100;
 	static private final int centerThreshold = 100;
+	static private final int featureCount = 15;
 	
+	public static int getFeaturecount() {
+		return featureCount;
+	}
+
 	public static int getScaleWidth(){
 		return scaleWidth;
 	}
