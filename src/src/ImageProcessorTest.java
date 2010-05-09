@@ -6,7 +6,9 @@ import imageprocess.ImageProcessingConstants;
 import imageprocess.ImageProcessor;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 
@@ -66,8 +68,9 @@ public class ImageProcessorTest {
 		if(segments.size()==0)
 			return null;
 		BufferedImage masterImage = ip.getMasterImage(normalBuff, segments);
-		BufferedImage processedImage = ip.normalizeImage(masterImage);
-		return processedImage;
+		BufferedImage croppedImage = ip.cropImage(masterImage);
+		BufferedImage scaledImage = ip.getScaledImage(croppedImage,ip.getNormalWidth(),ip.getNormalHeight());
+		return scaledImage;
 	}
 	public static void extractObjects(String srcPath, String destPath)
 	{
@@ -88,8 +91,7 @@ public class ImageProcessorTest {
 				if(masterImage != null)
 				{
 					writeImageFile(masterImage, dumpPath+i+".jpg");
-					ImageProcessor ip = new ImageProcessor();
-					writeImageFile(ip.getMirrorImage(masterImage), dumpPath+"mirror_"+i+".jpg");
+					writeImageFile(ImageProcessor.getMirrorImage(masterImage), dumpPath+"mirror_"+i+".jpg");
 				}
 			}
 			catch(Exception e)
@@ -104,8 +106,9 @@ public class ImageProcessorTest {
 		String negFolder = dumpPath+"negative\\"+type;
 		String dataFile = dumpPath+type+ft+".arff";
 		
+		BufferedWriter dataBuff =  new BufferedWriter(new FileWriter(dataFile,true));
+		
 		boolean firstSample = true;
-				
 		File [] posFiles = Utility.listFiles(posFolder);
 		File [] negFiles = Utility.listFiles(negFolder);
 		
@@ -120,9 +123,9 @@ public class ImageProcessorTest {
 					if(firstSample && fv!=null)
 					{
 						firstSample = false;
-						Utility.initDataset(dataFile, fv.size());
+						Utility.initDataset(dataBuff, fv.size());
 					}
-					Utility.addSample(dataFile, fv);
+					Utility.addSample(dataBuff, fv);
 				}
 				catch(Exception e) {
 				}
@@ -136,9 +139,9 @@ public class ImageProcessorTest {
 					if(firstSample && fv!=null)
 					{
 						firstSample = false;
-						Utility.initDataset(dataFile, fv.size());
+						Utility.initDataset(dataBuff, fv.size());
 					}
-					Utility.addSample(dataFile, fv);
+					Utility.addSample(dataBuff, fv);
 				}
 				catch(Exception e) {
 				}
