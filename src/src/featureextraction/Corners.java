@@ -9,7 +9,7 @@ public class Corners {
 	int convolveX[] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
 	int convolveY[] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
 	int templateSize = 3;
-	double k = 0.04;
+	double k = 0.15;
 	double threshold = 10000000;
 	public void harris() {
 			progress=0;
@@ -21,7 +21,6 @@ public class Corners {
 			input = inputIn;
 			output = new int[width*height];
 			this.k = k;
-
 		}
 		public int[] process() {
 			progress=0;
@@ -70,10 +69,6 @@ public class Corners {
 			// now perform "harris corner reposnse" function
 			double hcr[] = new double[width * height];
 			double val = 0;
-			double max = 0;
-			double maxA = 0;
-			double min = 100;
-			double minA = 100;
 			double A, B, C;
 			for(int x = 0; x < width; x++) {
 				progress++;
