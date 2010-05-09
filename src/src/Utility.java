@@ -107,17 +107,26 @@ public class Utility {
 		
 		return predicted;
 	}
-	public static void cleanup(String directory)
+	public static void cleanup(Vector<String> dirs)
 	{
-		File dir = new File(directory);
-		File []files = dir.listFiles();
-		for (int i=0;i<files.length;i++)
-			files[i].delete();
+		for(String directory : dirs){
+			File dir = new File(directory);
+			if(dir.exists()){
+				File []files = dir.listFiles();
+				for (int i=0;i<files.length;i++)
+					files[i].delete();
+			}else{
+				dir.mkdirs();
+			}
+		}
 	}
+	
+
 	public static File[] listFiles(String directory)
 	{
 		File dir = new File(directory);
 		System.out.println(dir);
 		return dir.listFiles(); 
 	}
+
 }
