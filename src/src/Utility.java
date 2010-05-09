@@ -9,9 +9,8 @@ import weka.core.converters.ArffLoader;
 
 
 public class Utility {
-	public static void initDataset(String fileName, int dimension) throws IOException
+	public static void initDataset(BufferedWriter buff, int dimension) throws IOException
 	{
-		BufferedWriter buff =  new BufferedWriter(new FileWriter(fileName,true));
 		String str = getHeader(dimension);
 		buff.append(str);
 		buff.newLine();	
@@ -20,8 +19,8 @@ public class Utility {
 			buff.close();
 		}
 	}
-	public static void addSample(String fileName, Vector<Double> data) throws IOException{
-		BufferedWriter buff =  new BufferedWriter(new FileWriter(fileName,true));
+	public static void addSample(BufferedWriter buff, Vector<Double> data) throws IOException
+	{
 		String str = "";
 		for(double val : data)
 			str += val + ",";
