@@ -125,6 +125,7 @@ public class Utility {
 	public static File[] listFiles(String directory)
 	{
 		File dir = new File(directory);
+		System.out.println(dir);
 		return dir.listFiles(); 
 	}
 }
