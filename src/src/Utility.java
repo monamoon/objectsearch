@@ -102,6 +102,13 @@ public class Utility {
 		
 		return predicted;
 	}
+	public static void cleanup(String directory)
+	{
+		File dir = new File(directory);
+		File []files = dir.listFiles();
+		for (int i=0;i<files.length;i++)
+			files[i].delete();
+	}
 	public static File[] listFiles(String directory)
 	{
 		File dir = new File(directory);

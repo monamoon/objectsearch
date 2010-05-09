@@ -21,18 +21,15 @@ public class ImageProcessorTest {
 	static String imgObj = "bird";
 	public static void main(String[] args) throws IOException, InterruptedException 
 	{
-		ImageProcessor ip = new ImageProcessor();
-		Vector<Vector<Double>> data= new Vector<Vector<Double>>();
-		BufferedImage orig = ImageIO.read(new File("C:\\Users\\kris\\workspace\\objectsearch\\images\\bird\\test\\0201.jpg"));
-		data.add(FeatureExtractor.getFeatureVector(orig, 1, FeatureType.FULLBITMAP));
-		data.add(FeatureExtractor.getFeatureVector(orig, 1, FeatureType.LINES));
-		data.add(FeatureExtractor.getFeatureVector(orig, 1, FeatureType.CURVES));
-		data.add(FeatureExtractor.getFeatureVector(orig, 1, FeatureType.CORNERS));
-		System.out.println(data);
+		String path = System.getProperty("user.dir");
+		Utility.cleanup(path+"\\images\\test\\positive");
+		Utility.cleanup(path+"\\images\\test\\negative");
+		Utility.cleanup(path+"\\images\\train\\positive");
+		Utility.cleanup(path+"\\images\\train\\negative");
 		//Utility.write("C:\\Users\\kris\\workspace\\objectsearch\\data.txt",data);
 		
 		
-//		String path = System.getProperty("user.dir");
+//		
 //		extractObjects(path+"\\images\\"+imgObj+"\\train\\");
 //		extractObjects(path+"\\images\\"+imgObj+"\\test\\");
 ////		classify(path+"\\images");
