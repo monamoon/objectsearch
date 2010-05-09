@@ -135,7 +135,7 @@ public class FeatureExtractor {
 			}			
 		}
 	}
-
+	
 	public Vector<Double> getFullBitmap(BufferedImage bi) throws InterruptedException 
 	{
 		ImageProcessor ip = new ImageProcessor();
@@ -153,14 +153,14 @@ public class FeatureExtractor {
 		Image piximg = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(width, height, orig,0,width));
 		fullImage.getGraphics().drawImage(piximg, 0, 0, null);
 		
-		fullImage = ip.getScaledImage(fullImage, ImageProcessingConstants.getInputwidth(),ImageProcessingConstants.getInputheight());
-		fullImage = ip.getMonoChromeImage(bi, ImageProcessingConstants.getMonochromethreshold());
+		BufferedImage scaledImage = ip.getScaledImage(fullImage, ImageProcessingConstants.getInputwidth(),ImageProcessingConstants.getInputheight());
+		BufferedImage monoImage = ip.getMonoChromeImage(scaledImage, ImageProcessingConstants.getMonochromethreshold());
 		
-		for(int i=0;i<fullImage.getWidth();i++)
+		for(int i=0;i<monoImage.getWidth();i++)
 		{
-			for(int j=0;j<fullImage.getHeight();j++)
+			for(int j=0;j<monoImage.getHeight();j++)
 			{
-				Color c = new Color(fullImage.getRGB(i, j));
+				Color c = new Color(monoImage.getRGB(i, j));
 				if(c.getBlue() != 0)
 					dataFile.add(1.0); 
 				else

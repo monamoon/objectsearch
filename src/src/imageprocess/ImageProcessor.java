@@ -289,38 +289,7 @@ public class ImageProcessor {
 		bufferedImage.createGraphics().drawImage(segImage,0,0,null);
 		return bufferedImage;
 	}
-	public void constructDataset(BufferedImage bi, String fileName)
-	{
-		try {
-			FileWriter fstream;
-			fstream = new FileWriter(fileName,true);
-			BufferedWriter fop = new BufferedWriter(fstream);
-
-			for(int i=bi.getMinX();i<bi.getWidth();i++)
-			{
-				for(int j=bi.getMinY();j<bi.getHeight();j++)
-				{
-					Color color = new Color(bi.getRGB(i, j));
-					if(color.equals(Color.black))
-						fop.write("0 ");
-					else
-						fop.write("1 ");
-				}	
-			}
-			fop.write("\n");
-			fop.close();
-		} 
-		catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
-	}
+	
 	public BufferedImage cropImage(BufferedImage bi)
 	{
 		int T = ImageProcessingConstants.getCenterthreshold();
@@ -361,7 +330,7 @@ public class ImageProcessor {
 		}
 		return buff;
 	}
-	public BufferedImage processSegment(BufferedImage bi) throws IOException 
+	public BufferedImage normalizeImage(BufferedImage bi) throws IOException 
 	{
 		BufferedImage cropBuff = cropImage(bi);
 		BufferedImage scaledBuff = getScaledImage(cropBuff,width,height);
