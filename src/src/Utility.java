@@ -10,52 +10,48 @@ import weka.core.converters.ArffLoader;
 
 public class Utility {
 
-	public static void write(String fileName, Vector<Vector<Double>> data){
-		
-		FileOutputStream out = null;
+	public static void write(String fileName, Vector<Vector<Double>> data)
+		 throws IOException {
+		File file = new File(fileName);
 		int size = data.get(0).size();
 		System.out.println(size);
 		String header = getHeader(size);
 		
-		try{
-			out = new FileOutputStream (fileName);
-			OutputStreamWriter writer = new OutputStreamWriter(out);
-			BufferedWriter buff = new BufferedWriter(writer);
-			
-			buff.write(header);
-			buff.newLine();
-			for(Vector<Double> line : data){
-				String string = "";
-				for(int j=0; j<(line.size()-1); j++){
-					double curr = line.get(j);
-					string += curr + ",";
-				}
-				{
-					string += line.lastElement();
-				}
-//				System.out.print(string);
-				buff.append(string);
-				buff.newLine();
-				
-			}
-			for(int i=0; i<5; i++){
-				buff.newLine();
-				buff.append("%");
-			}
-			buff.newLine();
-			if (out != null) writer.close();
-		}catch(IOException e){
-			System.out.println(e);
+		if (!file.canWrite()){
+			throw new IllegalArgumentException("File cannot be written: " + file);
 		}
-				
-//		for(String curr : sample)
-//			data.add(curr.split(","));
-//		
-//		return data;
-
+		
+		
+		//use buffering
+		FileOutputStream out = new FileOutputStream(file);
+		OutputStreamWriter writer = new OutputStreamWriter(out);
+		BufferedWriter buff = new BufferedWriter(writer);
+		
+		buff.write(header);
+		buff.newLine();
+		for(Vector<Double> line : data){
+			String string = "";
+			for(int j=0; j<(line.size()-1); j++){
+				double curr = line.get(j);
+				string += curr + ",";
+			}
+			{
+				string += line.lastElement();
+			}
+//				System.out.print(string);
+			buff.append(string);
+			buff.newLine();
+			
+		}
+		for(int i=0; i<5; i++){
+			buff.newLine();
+			buff.append("%");
+		}
+		buff.newLine();
+		if (out != null) writer.close();
 		
 	}
-	
+
 	public static String getHeader(int size){
 		String line = null;
 		line = "@RELATION ObjectSearch"+"\n";
