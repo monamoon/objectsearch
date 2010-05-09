@@ -21,11 +21,13 @@ import classify.SVMClassifier;
 public class ImageProcessorTest {
 	public static void initAnalysis(String path)
 	{
-		Utility.cleanup(path+"\\positive\\train"); 
-		Utility.cleanup(path+"\\positive\\test");
-		Utility.cleanup(path+"\\negative\\train"); 
-		Utility.cleanup(path+"\\negative\\test");
+		Vector<String> dirs = new Vector<String>();
+		dirs.add(path+"\\positive\\train"); 
+		dirs.add(path+"\\positive\\test");
+		dirs.add(path+"\\negative\\train"); 
+		dirs.add(path+"\\negative\\test");
 		
+		Utility.cleanup(dirs);
 		new File(path+"test.arff").delete();
 		new File(path+"train.arff").delete();
 		
