@@ -32,8 +32,9 @@ public class ImageProcessorTest {
 		Utility.cleanup(posFolder+"train"); 
 		Utility.cleanup(posFolder+"test");
 		
-		extractObjects(imgFolder+"positive",posFolder);
-		extractObjects(imgFolder+"negative",negFolder);
+		extractObjects(imgFolder+"positive\\",posFolder);
+		extractObjects(imgFolder+"negative\\",negFolder);
+		
 	}
 	public static BufferedImage cleanupImage(BufferedImage bi) throws IOException
 	{
@@ -51,7 +52,6 @@ public class ImageProcessorTest {
 	}
 	public static void extractObjects(String srcPath, String destPath)
 	{
-
 		File [] imgFiles = Utility.listFiles(srcPath);
 		String dumpPath = destPath;
 		for(int i=0;i<imgFiles.length;i++)
@@ -60,7 +60,7 @@ public class ImageProcessorTest {
 			if(i<ImageProcessingConstants.getTraincount())
 				dumpPath = destPath+"train\\";
 			else
-				dumpPath = destPath+"train\\";
+				dumpPath = destPath+"test\\";
 			
 			try
 			{
@@ -77,8 +77,31 @@ public class ImageProcessorTest {
 			{
 				
 			}
-			
 		}		
+	}
+	public static Vector<Vector<Double>> getDataset(String dumpPath,String type) throws InterruptedException, IOException
+	{
+		Vector<Vector<Double>> dataset = new Vector<Vector<Double>>();
+		String posFolder = dumpPath+"positive\\"+type;
+		String negFolder = dumpPath+"negative\\"+type;
+		
+		FeatureType ft = ImageProcessingConstants.getFeaturetype();
+		File [] posFiles = Utility.listFiles(posFolder);
+		File [] negFiles = Utility.listFiles(negFolder);
+		for(int i=0;i<posFiles.length && i<negFiles.length;i++)
+		{
+			if(i<posFiles.length)
+			{
+				BufferedImage posB = ImageIO.read(posFiles[i]);
+				dataset.add(FeatureExtractor.getFeatureVector(posB, 1, ft));
+			}
+			if(i<negFiles.length)
+			{
+				BufferedImage negB = ImageIO.read(negFiles[i]);
+				dataset.add(FeatureExtractor.getFeatureVector(negB, 0, ft));
+			}
+		}
+		return dataset;
 	}
 	public static void clusterObjects(String dir) throws IOException, InterruptedException
 	{
