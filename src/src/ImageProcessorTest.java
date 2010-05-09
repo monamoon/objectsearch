@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 
 import net.sf.javaml.core.Dataset;
 import som.ImageSom;
+import util.Utility;
 import classify.SVMClassifier;
 
 public class ImageProcessorTest {
@@ -32,8 +33,8 @@ public class ImageProcessorTest {
 	}
 	public static void runImageAnalysis(String repository, String dumpPath)
 	{
-		extractObjects(repository+"\\positive\\",dumpPath+"\\positive\\");
-		extractObjects(repository+"\\negative\\",dumpPath+"\\negative\\");
+		extractObjects(repository+"positive\\",dumpPath+"\\positive\\");
+		extractObjects(repository+"negative\\",dumpPath+"\\negative\\");
 	}
 	public static void createDataset(String dumpPath) throws InterruptedException, IOException
 	{
@@ -42,10 +43,10 @@ public class ImageProcessorTest {
 	}
 	public static void main(String[] args) throws IOException, InterruptedException 
 	{
-		String path = System.getProperty("user.dir");
-		String dumpPath = path+"\\images\\"
-								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype(); 
-		String repository = path+"\\dataset\\"
+		String path = System.getProperty("user.dir")+"\\";
+		String dumpPath = path+"images\\"
+								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype()+"\\"; 
+		String repository = path+"dataset\\"
 								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype()+"\\";
 		if(ImageProcessingConstants.isdoAnalysis())
 		{
