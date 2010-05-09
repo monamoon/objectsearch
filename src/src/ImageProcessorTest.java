@@ -53,65 +53,32 @@ public class ImageProcessorTest {
 	{
 
 		File [] imgFiles = Utility.listFiles(srcPath);
-		
+		String dumpPath = destPath;
 		for(int i=0;i<imgFiles.length;i++)
 		{
+			
+			if(i<ImageProcessingConstants.getTraincount())
+				dumpPath = destPath+"train\\";
+			else
+				dumpPath = destPath+"train\\";
+			
 			try
 			{
 				BufferedImage readImage = ImageIO.read(imgFiles[i]);
 				BufferedImage masterImage = cleanupImage(readImage);
 				if(masterImage != null)
 				{
-					writeImageFile(masterImage, destPath+i+".jpg");
+					writeImageFile(masterImage, dumpPath+i+".jpg");
 					ImageProcessor ip = new ImageProcessor();
-					writeImageFile(ip.getMirrorImage(masterImage), traindata+"preprocess/g" +(1000-i)+".jpg");
-				
-				for(int j=0;j<segments.size();j++)
-				{
-					BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
-					writeImageFile(processedBuff, traindata+"objects/g"+i+"_"+j+".jpg");
-				}
-				
-			}
-			catch (IOException e)
-			{
-				System.out.println("COULD not find file");
-				break;
-			}
-		}
-		imgFiles = Utility.listFiles(filePath+"negative\\");
-		for(int i=0;i<imgFiles.length;i++)
-		{
-			try
-			{
-				BufferedImage readImage = ImageIO.read(imgFiles[i]);
-				BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
-				if(normalBuff==null)
-					continue;
-				
-				BufferedImage segmentImage = ip.getSegmentedImage(normalBuff);
-				BufferedImage preprocessed = ip.removeBG(segmentImage);
-				Vector<BufferedImage> segments = ip.getSegments(normalBuff,preprocessed);
-				if(segments.size()==0)
-					continue;
-				BufferedImage master1 = ip.getMasterImage(normalBuff, segments);
-				BufferedImage master2 = ip.processSegment(master1);
-				BufferedImage master3 = ip.getMirrorImage(master2);		
-				
-				writeImageFile(master2, testdata+"preprocess/b" +i+".jpg");
-				writeImageFile(master3, testdata+"preprocess/b" +(1000-i)+".jpg");
-				
-				for(int j=0,k=0;j<segments.size();j++,k++)
-				{
-					BufferedImage processedBuff = ip.processSegment(segments.elementAt(j));
-					writeImageFile(processedBuff, testdata+"objects/b"+i+"_"+k+".jpg");
+					writeImageFile(ip.getMirrorImage(masterImage), dumpPath+"mirror_"+i+".jpg");
 				}
 			}
-			catch (IOException e)
+			catch(Exception e)
 			{
-				break;
+				
 			}
-		}	
+			
+		}		
 	}
 	public static void clusterObjects(String dir) throws IOException, InterruptedException
 	{
@@ -174,7 +141,7 @@ public class ImageProcessorTest {
 		{
 			//positive examples
 			
-				String fileName = trainPath + imgObj;
+				String fileName = trainPath;// + imgObj;
 				if((new File(fileName)).exists())
 				{	
 				BufferedImage readImage = ImageIO.read(new File(fileName));
