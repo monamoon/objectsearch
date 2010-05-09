@@ -29,9 +29,6 @@ public class ImageProcessorTest {
 		
 		Utility.cleanup(dirs);
 		
-		new File(path+"test.arff").delete();
-		new File(path+"train.arff").delete();
-		
 	}
 	public static void runImageAnalysis(String repository, String dumpPath)
 	{
@@ -40,8 +37,8 @@ public class ImageProcessorTest {
 	}
 	public static void createDataset(String dumpPath) throws InterruptedException, IOException
 	{
-		getDataset(dumpPath, "test", ImageProcessingConstants.getFeaturetype());
 		getDataset(dumpPath, "train", ImageProcessingConstants.getFeaturetype());
+		getDataset(dumpPath, "test", ImageProcessingConstants.getFeaturetype());
 	}
 	public static void main(String[] args) throws IOException, InterruptedException 
 	{
@@ -108,6 +105,7 @@ public class ImageProcessorTest {
 		String posFolder = dumpPath+"positive\\"+type;
 		String negFolder = dumpPath+"negative\\"+type;
 		String dataFile = dumpPath+type+ft+".arff";
+		new File(dataFile).delete();
 		
 		BufferedWriter dataBuff =  new BufferedWriter(new FileWriter(dataFile,true));
 		
@@ -139,7 +137,7 @@ public class ImageProcessorTest {
 				try {
 					System.out.println(negFiles[i].getPath());
 					BufferedImage negB = ImageIO.read(negFiles[i]);
-					Vector<Double> fv = FeatureExtractor.getFeatureVector(negB, 1, ft);
+					Vector<Double> fv = FeatureExtractor.getFeatureVector(negB, 0, ft);
 					if(firstSample && fv!=null)
 					{
 						firstSample = false;
