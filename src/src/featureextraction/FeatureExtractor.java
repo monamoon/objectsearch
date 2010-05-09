@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public class FeatureExtractor {
 	Vector<Double> dataFile = new Vector<Double>();
-	public static Vector<Double> getFeatureVector(BufferedImage bi, double label, Feature featuretype) throws InterruptedException
+	public static Vector<Double> getFeatureVector(BufferedImage bi, double label, FeatureType featuretype) throws InterruptedException
 	{
 		FeatureExtractor fe = new FeatureExtractor();
 		switch(featuretype)
@@ -23,7 +23,7 @@ public class FeatureExtractor {
 			
 			case CORNERS:
 				fe.addCornerVector(bi);
-				return null;
+				break;
 				
 			case LINES:
 				fe.addLineVector(bi);
@@ -33,7 +33,7 @@ public class FeatureExtractor {
 				fe.addCircleVector(bi,10);
 				fe.addCircleVector(bi,20);
 				fe.addCircleVector(bi,30);
-				return null;
+				break;
 		}
 		fe.dataFile.add(label);
 		return fe.dataFile;
@@ -113,7 +113,7 @@ public class FeatureExtractor {
 		grabber.grabPixels();
 	
 		Corners harrisObj = new Corners();
-		harrisObj.init(orig,width, height, 0.14);
+		harrisObj.init(orig,width, height, 0.04);
 		orig=harrisObj.process();
 		
 		BufferedImage fullImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -139,7 +139,6 @@ public class FeatureExtractor {
 	public Vector<Double> getFullBitmap(BufferedImage bi) throws InterruptedException 
 	{
 		ImageProcessor ip = new ImageProcessor();
-		Vector<Double> dataFile = new Vector<Double>();
 		int width = bi.getWidth();
 		int height = bi.getHeight();
 		

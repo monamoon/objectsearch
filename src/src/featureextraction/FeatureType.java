@@ -1,6 +1,6 @@
 package featureextraction;
 
-public enum Feature {
+public enum FeatureType {
 	FULLBITMAP,
 	CORNERS,
 	LINES,
