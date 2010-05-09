@@ -1,5 +1,9 @@
 package featureextraction;
 
+import imageprocess.ImageProcessingConstants;
+
+import java.util.Vector;
+
 
 public class Lines {
 
@@ -10,13 +14,18 @@ public class Lines {
 		int width;
 		int height;
 		int[] acc;
-		int accSize=15;
+		int accSize=ImageProcessingConstants.getFeaturecount();
 		int[] results;
 
 		public Lines() {
 			progress=0;
 		}
-
+		public Vector<Double> getResults(){
+			Vector<Double> result = new Vector<Double>();
+			for(int i=0;i<accSize*3;i++)
+				result.add((double)results[i]);
+			return result;
+		}
 		public void init(int[] inputIn, int widthIn, int heightIn) {
 			width=widthIn;
 			height=heightIn;
@@ -84,7 +93,6 @@ public class Lines {
 			//accSize=rmax;
 			findMaxima();
 
-			System.out.println("done");
 			return output;
 		}
 		private int[] findMaxima() {

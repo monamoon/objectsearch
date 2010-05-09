@@ -1,5 +1,9 @@
 package featureextraction;
 
+import java.util.Vector;
+
+import imageprocess.ImageProcessingConstants;
+
 public class Circles {
 
 		int[] input;
@@ -9,14 +13,19 @@ public class Circles {
 		int width;
 		int height;
 		int[] acc;
-		int accSize=15;
+		int accSize=ImageProcessingConstants.getFeaturecount();
 		int[] results;
 		int r;
 
 		public Circles() {
 			progress=0;
 		}
-
+		public Vector<Double> getResults(){
+			Vector<Double> result = new Vector<Double>();
+			for(int i=0;i<accSize*3;i++)
+				result.add((double)results[i]);
+			return result;
+		}
 		public void init(int[] inputIn, int widthIn, int heightIn, int radius) {
 			r = radius;
 			width=widthIn;
@@ -85,8 +94,6 @@ public class Circles {
 				}
 			}
 			findMaxima();
-
-			System.out.println("done");
 			return output;
 		}
 		private int[] findMaxima() {
@@ -122,11 +129,10 @@ public class Circles {
 			}
 		
 			double ratio=(double)(width/2)/accSize;
-			System.out.println("top "+accSize+" matches:");
+			//System.out.println("top "+accSize+" matches:");
 			for(int i=accSize-1; i>=0; i--){
 				progress+=ratio;			
-				//System.out.println("value: " + results[i*3] + ", r: " + results[i*3+1] + ", theta: " + results[i*3+2]);
-				drawCircle(results[i*3], results[i*3+1], results[i*3+2]);
+				//drawCircle(results[i*3], results[i*3+1], results[i*3+2]);
 			}
 			return output;
 		}
