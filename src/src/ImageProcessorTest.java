@@ -46,14 +46,14 @@ public class ImageProcessorTest {
 		String dumpPath = path+"\\images\\"
 								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype(); 
 		String repository = path+"\\dataset\\"
-								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype();
+								+ImageProcessingConstants.getObjecttype()+"\\"+ImageProcessingConstants.getIdentificationtype()+"\\";
 		if(ImageProcessingConstants.isdoAnalysis())
 		{
 			initAnalysis(dumpPath);
 			runImageAnalysis(repository,dumpPath);
 		}
 		
-		createDataset(dumpPath+"\\");
+		createDataset(dumpPath);
 		
 	}
 	public static BufferedImage cleanupImage(BufferedImage bi) throws IOException
