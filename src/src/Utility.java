@@ -14,10 +14,7 @@ public class Utility {
 		String str = getHeader(dimension);
 		buff.append(str);
 		buff.newLine();	
-		if (buff != null) {
-			buff.flush();
-			buff.close();
-		}
+
 	}
 	public static void addSample(BufferedWriter buff, Vector<Double> data) throws IOException
 	{
@@ -26,10 +23,7 @@ public class Utility {
 			str += val + ",";
 		buff.append(str);
 		buff.newLine();	
-		if (buff != null) {
-			buff.flush();
-			buff.close();
-		}
+
 	}
 	
 	public static void write(String fileName, Vector<Vector<Double>> data)
