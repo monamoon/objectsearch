@@ -1,6 +1,7 @@
 
 
 import featureextraction.FeatureExtractor;
+import featureextraction.FeatureType;
 import imageprocess.ImageProcessor;
 
 import java.awt.image.BufferedImage;
@@ -21,14 +22,15 @@ public class ImageProcessorTest {
 	public static void main(String[] args) throws IOException, InterruptedException 
 	{
 		ImageProcessor ip = new ImageProcessor();
+		Vector<Vector<Double>> data= new Vector<Vector<Double>>();
 		BufferedImage orig = ImageIO.read(new File("C:\\Users\\kris\\workspace\\objectsearch\\images\\bird\\test\\0201.jpg"));
-		BufferedImage lines = ip.getLineImage(orig);
-		ImageIO.write(lines, "jpg", new File("C:\\Users\\kris\\workspace\\objectsearch\\images\\bird\\test\\0201_line.jpg"));
-		BufferedImage circles = ip.getCircleImage(orig);
-		ImageIO.write(circles, "jpg", new File("C:\\Users\\kris\\workspace\\objectsearch\\images\\bird\\test\\0201_circle.jpg"));
-		BufferedImage corners = ip.getCornerImage(orig);
-		ImageIO.write(corners, "jpg", new File("C:\\Users\\kris\\workspace\\objectsearch\\images\\bird\\test\\0201_corner.jpg"));
-
+		data.add(FeatureExtractor.getFeatureVector(orig, 1, FeatureType.FULLBITMAP));
+		data.add(FeatureExtractor.getFeatureVector(orig, 1, FeatureType.LINES));
+		data.add(FeatureExtractor.getFeatureVector(orig, 1, FeatureType.CURVES));
+		data.add(FeatureExtractor.getFeatureVector(orig, 1, FeatureType.CORNERS));
+		System.out.println(data);
+		//Utility.write("C:\\Users\\kris\\workspace\\objectsearch\\data.txt",data);
+		
 		
 //		String path = System.getProperty("user.dir");
 //		extractObjects(path+"\\images\\"+imgObj+"\\train\\");
@@ -50,6 +52,7 @@ public class ImageProcessorTest {
 			System.out.println(imgFiles[i]);
 			try
 			{
+				
 				BufferedImage readImage = ImageIO.read(imgFiles[i]);
 				BufferedImage normalBuff = ip.getScaledImage(readImage,ip.getNormalWidth(),ip.getNormalHeight());
 				if(normalBuff==null)
@@ -114,7 +117,7 @@ public class ImageProcessorTest {
 			}
 		}	
 	}
-	public static void clusterObjects(String dir) throws IOException
+	public static void clusterObjects(String dir) throws IOException, InterruptedException
 	{
 		Vector<Vector<Double>> data = new Vector<Vector<Double>>();	
 		for(int k=1;k<100;k++)
@@ -123,7 +126,7 @@ public class ImageProcessorTest {
 			if(!(new File(fileName)).exists())
 				continue;
 			BufferedImage readImage = ImageIO.read(new File(fileName));
-			data.add(FeatureExtractor.getFullBitmap(readImage,k));	
+			data.add(FeatureExtractor.getFeatureVector(readImage, k, FeatureType.FULLBITMAP));
 		}
 		for(int k=1;k<100;k++)
 		{
@@ -131,7 +134,7 @@ public class ImageProcessorTest {
 			if(!(new File(fileName)).exists())
 				continue;
 			BufferedImage readImage = ImageIO.read(new File(fileName));
-			data.add(FeatureExtractor.getFullBitmap(readImage,-k));	
+			data.add(FeatureExtractor.getFeatureVector(readImage, -k, FeatureType.FULLBITMAP));	
 		}
 		for(int k=1;k<100;k++)
 		{
@@ -139,7 +142,7 @@ public class ImageProcessorTest {
 			if(!(new File(fileName)).exists())
 				continue;
 			BufferedImage readImage = ImageIO.read(new File(fileName));
-			data.add(FeatureExtractor.getFullBitmap(readImage,100+k));	
+			data.add(FeatureExtractor.getFeatureVector(readImage, k, FeatureType.FULLBITMAP));	
 		}
 		for(int k=1;k<100;k++)
 		{
@@ -147,7 +150,7 @@ public class ImageProcessorTest {
 			if(!(new File(fileName)).exists())
 				continue;
 			BufferedImage readImage = ImageIO.read(new File(fileName));
-			data.add(FeatureExtractor.getFullBitmap(readImage,-(100+k)));	
+			data.add(FeatureExtractor.getFeatureVector(readImage, -k, FeatureType.FULLBITMAP));
 		}
 		System.out.println("Output size: "+data.size());
 		ImageSom som = new ImageSom(data);
@@ -179,7 +182,7 @@ public class ImageProcessorTest {
 				if((new File(fileName)).exists())
 				{	
 				BufferedImage readImage = ImageIO.read(new File(fileName));
-				trainset.add(FeatureExtractor.getFullBitmap(readImage,1));
+		//		trainset.add(FeatureExtractor.getFullBitmap(readImage,1));
 				}
 				
 			//negative examples
@@ -188,7 +191,7 @@ public class ImageProcessorTest {
 				if((new File(fileName)).exists())
 				{
 				BufferedImage readImage = ImageIO.read(new File(fileName));
-				trainset.add(FeatureExtractor.getFullBitmap(readImage,0));
+				//trainset.add(FeatureExtractor.getFullBitmap(readImage,0));
 				}
 		}
 		}
@@ -204,7 +207,7 @@ public class ImageProcessorTest {
 				if((new File(fileName)).exists())
 				{
 				BufferedImage readImage = ImageIO.read(new File(fileName));
-				testset.add(FeatureExtractor.getFullBitmap(readImage,1));
+		//		testset.add(FeatureExtractor.getFullBitmap(readImage,1));
 				}
 			//}
 			//negative examples
@@ -213,7 +216,7 @@ public class ImageProcessorTest {
 				if((new File(fileName)).exists())
 				{
 				BufferedImage readImage = ImageIO.read(new File(fileName));
-				testset.add(FeatureExtractor.getFullBitmap(readImage,0));
+		//		testset.add(FeatureExtractor.getFullBitmap(readImage,0));
 				}
 			//}
 		}
