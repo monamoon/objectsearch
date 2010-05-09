@@ -35,6 +35,10 @@ public class ImageProcessorTest {
 		extractObjects(imgFolder+"positive\\",posFolder);
 		extractObjects(imgFolder+"negative\\",negFolder);
 		
+		Vector<Vector<Double>> data = getDataset(path + "\\images\\", "test");
+		Utility.write(path + "test.arff", data);
+		data = getDataset(path + "\\images\\", "train");
+		Utility.write(path + "train.arff", data);
 	}
 	public static BufferedImage cleanupImage(BufferedImage bi) throws IOException
 	{
