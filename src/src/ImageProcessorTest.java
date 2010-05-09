@@ -130,6 +130,7 @@ public class ImageProcessorTest {
 				catch(Exception e) {
 				}
 			}
+			
 			if(i<negFiles.length)
 			{
 				try {
@@ -146,6 +147,10 @@ public class ImageProcessorTest {
 				catch(Exception e) {
 				}
 			}
+		}
+		if (dataBuff != null) {
+			dataBuff.flush();
+			dataBuff.close();
 		}
 	}
 	public static void clusterObjects(String dir) throws IOException, InterruptedException
