@@ -28,6 +28,7 @@ public class ImageProcessorTest {
 		dirs.add(path+"\\negative\\test");
 		
 		Utility.cleanup(dirs);
+		
 		new File(path+"test.arff").delete();
 		new File(path+"train.arff").delete();
 		
@@ -55,7 +56,7 @@ public class ImageProcessorTest {
 			runImageAnalysis(repository,dumpPath);
 		}
 		
-		createDataset(dumpPath);
+		createDataset(dumpPath+"\\");
 		
 	}
 	public static BufferedImage cleanupImage(BufferedImage bi) throws IOException
