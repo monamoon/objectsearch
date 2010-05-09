@@ -17,19 +17,12 @@ public class Utility {
 		System.out.println(size);
 		String header = getHeader(size);
 		
-		if (!file.canWrite()){
-			throw new IllegalArgumentException("File cannot be written: " + file);
-		}
-		
-		
-		//use buffering
-		FileOutputStream out = new FileOutputStream(file);
-		OutputStreamWriter writer = new OutputStreamWriter(out);
-		BufferedWriter buff = new BufferedWriter(writer);
+		BufferedWriter buff =  new BufferedWriter(new FileWriter(file));
 		
 		buff.write(header);
 		buff.newLine();
 		for(Vector<Double> line : data){
+			System.out.println("line size: " + line.size());
 			String string = "";
 			for(int j=0; j<(line.size()-1); j++){
 				double curr = line.get(j);
@@ -48,7 +41,10 @@ public class Utility {
 			buff.append("%");
 		}
 		buff.newLine();
-		if (out != null) writer.close();
+		if (buff != null) {
+			buff.flush();
+			buff.close();
+		}
 		
 	}
 
