@@ -34,18 +34,18 @@ public class SearchApp {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		BufferedImage buf = ImageIO.read(new File("C:\\cars\\8.jpg"));
 		BufferedImage buf1 = getLineImage(buf);
-//		ImageIO.write(buf1, "jpg", new File("C:\\cars\\8_line.jpg"));
-//		BufferedImage buf21 = getCircleImage(buf,10);
-//		ImageIO.write(buf21, "jpg", new File("C:\\cars\\8_circle1.jpg"));
-//		BufferedImage buf22 = getCircleImage(buf,20);
-//		ImageIO.write(buf22, "jpg", new File("C:\\cars\\8_circle2.jpg"));
-//		BufferedImage buf23 = getCircleImage(buf,30);
-//		ImageIO.write(buf23, "jpg", new File("C:\\cars\\8_circle3.jpg"));
+		ImageIO.write(buf1, "jpg", new File("C:\\cars\\8_line.jpg"));
+		BufferedImage buf21 = getCircleImage(buf,100);
+		ImageIO.write(buf21, "jpg", new File("C:\\cars\\8_circle1.jpg"));
+		BufferedImage buf22 = getCircleImage(buf,25);
+		ImageIO.write(buf22, "jpg", new File("C:\\cars\\8_circle2.jpg"));
+		BufferedImage buf23 = getCircleImage(buf,50);
+		ImageIO.write(buf23, "jpg", new File("C:\\cars\\8_circle3.jpg"));
 //		
 //		BufferedImage buf3 = getFullBitmap(buf);
 //		ImageIO.write(buf3, "jpg", new File("C:\\cars\\8_mono.jpg"));
-		BufferedImage buf4 = getCornerImage(buf);
-		ImageIO.write(buf4, "jpg", new File("C:\\cars\\8_corner.jpg"));
+//		BufferedImage buf4 = getCornerImage(buf);
+//		ImageIO.write(buf4, "jpg", new File("C:\\cars\\8_corner.jpg"));
 		
 	}
 	public static BufferedImage getFullBitmap(BufferedImage bi) throws InterruptedException 
@@ -100,6 +100,7 @@ public class SearchApp {
 		
 		Circles circles = new Circles();
 		circles.init(orig, width, height,radius);
+		circles.setLines(50);
 		orig = circles.process();
 		
 		BufferedImage circleImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -181,6 +182,7 @@ public class SearchApp {
 		
 		Lines lines = new Lines();
 		lines.init(orig, width, height);
+		lines.setLines(100);
 		orig = lines.process();
 		
 		BufferedImage lineImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
