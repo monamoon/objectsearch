@@ -134,6 +134,10 @@ public class Utility {
 		}
 	}
 	
+	public static double getRGB(Color c)
+	{
+		return Math.sqrt((c.getRed()*c.getRed()+c.getBlue()*c.getBlue()+c.getGreen()*c.getGreen())/3);
+	}
 	public static Vector<Double> createImage(int[] orig, int width, int height){
 		ImageProcessor ip = new ImageProcessor();
 		Vector<Double> dataFile = new Vector<Double>();
@@ -143,17 +147,13 @@ public class Utility {
 		fullImage.getGraphics().drawImage(piximg, 0, 0, null);
 		
 		BufferedImage scaledImage = ip.getScaledImage(fullImage, ImageProcessingConstants.getInputwidth(),ImageProcessingConstants.getInputheight());
-		BufferedImage monoImage = ip.getMonoChromeImage(scaledImage, ImageProcessingConstants.getMonochromethreshold());
 		
-		for(int i=0;i<monoImage.getWidth();i++)
+		for(int i=0;i<scaledImage.getWidth();i++)
 		{
-			for(int j=0;j<monoImage.getHeight();j++)
+			for(int j=0;j<scaledImage.getHeight();j++)
 			{
-				Color c = new Color(monoImage.getRGB(i, j));
-				if(c.getBlue() != 0)
-					dataFile.add(1.0); 
-				else
-					dataFile.add(0.0);
+				Color c = new Color(scaledImage.getRGB(i, j));
+				dataFile.add(getRGB(c)); 
 			}			
 		}
 		return dataFile;
