@@ -1,4 +1,5 @@
 package featureextraction;
+
 import imageprocess.ImageProcessingConstants;
 import imageprocess.ImageProcessor;
 
@@ -10,33 +11,43 @@ import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
 import java.util.Vector;
 
+import util.Utility;
+
 public class FeatureExtractor {
 	Vector<Double> dataFile = new Vector<Double>();
 	public static Vector<Double> getFeatureVector(BufferedImage bi, double label, FeatureType featuretype) throws InterruptedException
 	{
+		boolean isValid = false;
 		FeatureExtractor fe = new FeatureExtractor();
 		switch(featuretype)
 		{
-			case FULLBITMAP:
+			case fullbitmap:
 				fe.getFullBitmap(bi);
 				break;
 			
-			case CORNERS:
+			case corners:
 				fe.addCornerVector(bi);
 				break;
 				
-			case LINES:
+			case lines:
 				fe.addLineVector(bi);
 				break;
 				
-			case CURVES:
+			case curves:
 				fe.addCircleVector(bi,10);
 				fe.addCircleVector(bi,20);
 				fe.addCircleVector(bi,30);
 				break;
 		}
-		fe.dataFile.add(label);
-		return fe.dataFile;
+		for(double current : fe.dataFile){
+			if(current != 0.0)
+				isValid = true;
+		}
+		if(isValid){
+			fe.dataFile.add(label);
+			return fe.dataFile;
+		}
+		return null;
 	}
 	public void addLineVector(BufferedImage bi) throws InterruptedException
 	{
@@ -104,35 +115,35 @@ public class FeatureExtractor {
     }
 	public void addCornerVector(BufferedImage bi) throws InterruptedException
 	{
-		ImageProcessor ip = new ImageProcessor();
-		int width = bi.getWidth();
-		int height = bi.getHeight();
+
 		
-		int []orig=new int[width*height];
-		PixelGrabber grabber = new PixelGrabber(bi, 0, 0, width, height, orig, 0, width);
+		int []orig=new int[bi.getWidth()* bi.getHeight()];
+		PixelGrabber grabber = new PixelGrabber(bi, 0, 0, bi.getWidth(),  bi.getHeight(), orig, 0, bi.getWidth());
 		grabber.grabPixels();
 	
 		Corners harrisObj = new Corners();
-		harrisObj.init(orig,width, height, 0.04);
+		harrisObj.init(orig,bi.getWidth(), bi.getHeight(), 0.04);
 		orig=harrisObj.process();
 		
+
 		int sw = ImageProcessingConstants.getInputwidth();
 		int sh = ImageProcessingConstants.getInputheight();
 		for (int i=0;i<sw*sh;i++)
 			dataFile.add(0.0);
 		
-		for(int i=0;i<width;i++)
+		for(int i=0;i<bi.getWidth();i++)
 		{
-			for(int j=0;j<height;j++)
+			for(int j=0;j<bi.getHeight();j++)
 			{
-				if(orig[i*width+j]>0)
+				if(orig[i*bi.getWidth()+j]>0)
 					dataFile.set(i + j/sh, dataFile.get(i + j/sh)+1);
 			}			
 		}
+
 	}
-	public Vector<Double> getFullBitmap(BufferedImage bi) throws InterruptedException 
+	public void getFullBitmap(BufferedImage bi) throws InterruptedException 
 	{
-		ImageProcessor ip = new ImageProcessor();
+		
 		int width = bi.getWidth();
 		int height = bi.getHeight();
 		
@@ -143,25 +154,8 @@ public class FeatureExtractor {
 		sobelObject.init(orig,width,height);
 		orig = sobelObject.process();
 		
-		BufferedImage fullImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		Image piximg = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(width, height, orig,0,width));
-		fullImage.getGraphics().drawImage(piximg, 0, 0, null);
+		dataFile.addAll(Utility.createImage(orig, width, height));
 		
-		BufferedImage scaledImage = ip.getScaledImage(fullImage, ImageProcessingConstants.getInputwidth(),ImageProcessingConstants.getInputheight());
-		BufferedImage monoImage = ip.getMonoChromeImage(scaledImage, ImageProcessingConstants.getMonochromethreshold());
-		
-		for(int i=0;i<monoImage.getWidth();i++)
-		{
-			for(int j=0;j<monoImage.getHeight();j++)
-			{
-				Color c = new Color(monoImage.getRGB(i, j));
-				if(c.getBlue() != 0)
-					dataFile.add(1.0); 
-				else
-					dataFile.add(0.0);
-			}			
-		}
-		return dataFile;
 	}
 	public static Vector<Double> getMD(BufferedImage bi, double label) 
 	{
