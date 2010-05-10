@@ -34,16 +34,16 @@ public class SearchApp {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		BufferedImage buf = ImageIO.read(new File("C:\\cars\\8.jpg"));
 		BufferedImage buf1 = getLineImage(buf);
-		ImageIO.write(buf1, "jpg", new File("C:\\cars\\8_line.jpg"));
-		BufferedImage buf21 = getCircleImage(buf,10);
-		ImageIO.write(buf21, "jpg", new File("C:\\cars\\8_circle1.jpg"));
-		BufferedImage buf22 = getCircleImage(buf,20);
-		ImageIO.write(buf22, "jpg", new File("C:\\cars\\8_circle2.jpg"));
-		BufferedImage buf23 = getCircleImage(buf,30);
-		ImageIO.write(buf23, "jpg", new File("C:\\cars\\8_circle3.jpg"));
-		
-		BufferedImage buf3 = getFullBitmap(buf);
-		ImageIO.write(buf3, "jpg", new File("C:\\cars\\8_mono.jpg"));
+//		ImageIO.write(buf1, "jpg", new File("C:\\cars\\8_line.jpg"));
+//		BufferedImage buf21 = getCircleImage(buf,10);
+//		ImageIO.write(buf21, "jpg", new File("C:\\cars\\8_circle1.jpg"));
+//		BufferedImage buf22 = getCircleImage(buf,20);
+//		ImageIO.write(buf22, "jpg", new File("C:\\cars\\8_circle2.jpg"));
+//		BufferedImage buf23 = getCircleImage(buf,30);
+//		ImageIO.write(buf23, "jpg", new File("C:\\cars\\8_circle3.jpg"));
+//		
+//		BufferedImage buf3 = getFullBitmap(buf);
+//		ImageIO.write(buf3, "jpg", new File("C:\\cars\\8_mono.jpg"));
 		BufferedImage buf4 = getCornerImage(buf);
 		ImageIO.write(buf4, "jpg", new File("C:\\cars\\8_corner.jpg"));
 		
@@ -125,12 +125,35 @@ public class SearchApp {
 		Corners harrisObj = new Corners();
 		harrisObj.init(orig,width, height, 0.2);
 		orig=harrisObj.process();
-
+		orig = overlayImage(orig,bi,width,height);
 		BufferedImage cornerImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		Image piximg = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(width, height, orig,0,width));
 		cornerImage.getGraphics().drawImage(piximg, 0, 0, null);
 		return cornerImage; 
 	
+	}
+	private static int[] overlayImage(int[] input, Image base, int width, int height){
+		
+		int[] myImage=new int[width*height];
+		
+		PixelGrabber grabber = new PixelGrabber(base, 0, 0, width, height, myImage, 0, width);
+		try {
+			grabber.grabPixels();
+		}
+		catch(InterruptedException e2) {
+			System.out.println("error: " + e2);
+		}
+
+
+		for(int x=0;x<width;x++) {
+			for(int y=0;y<height;y++) {
+				if((input[y*width+x]&0xff)>0)
+					myImage[y*width+x]= 0xffff0000;
+			}
+		}
+
+		return myImage;
+
 	}
 
 	public static BufferedImage getLineImage(BufferedImage bi) throws InterruptedException
