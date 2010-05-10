@@ -116,26 +116,20 @@ public class FeatureExtractor {
 		harrisObj.init(orig,width, height, 0.04);
 		orig=harrisObj.process();
 		
-		BufferedImage fullImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		Image piximg = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(width, height, orig,0,width));
-		fullImage.getGraphics().drawImage(piximg, 0, 0, null);
+		int sw = ImageProcessingConstants.getInputwidth();
+		int sh = ImageProcessingConstants.getInputheight();
+		for (int i=0;i<sw*sh;i++)
+			dataFile.add(0.0);
 		
-		fullImage = ip.getScaledImage(fullImage, ImageProcessingConstants.getInputwidth(),ImageProcessingConstants.getInputheight());
-		fullImage = ip.getMonoChromeImage(bi, ImageProcessingConstants.getMonochromethreshold());
-		
-		for(int i=0;i<fullImage.getWidth();i++)
+		for(int i=0;i<width;i++)
 		{
-			for(int j=0;j<fullImage.getHeight();j++)
+			for(int j=0;j<height;j++)
 			{
-				Color c = new Color(fullImage.getRGB(i, j));
-				if(c.getBlue() != 0)
-					dataFile.add(1.0); 
-				else
-					dataFile.add(0.0);
+				if(orig[i*width+j]>0)
+					dataFile.set(i + j/sh, dataFile.get(i + j/sh)+1);
 			}			
 		}
 	}
-	
 	public Vector<Double> getFullBitmap(BufferedImage bi) throws InterruptedException 
 	{
 		ImageProcessor ip = new ImageProcessor();
