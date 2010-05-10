@@ -16,9 +16,9 @@ public class ImageProcessingConstants {
 	static private final int featureCount = 15;
 	static private final int trainCount= 15;
 	static private final FeatureType featureType= FeatureType.LINES;
-	static private final String objectType = "Bicycle";
+	static private final String objectType = "Ship";
 	static private final String identificationType = "generic identification";
-	static private final boolean doAnalysis = false;
+	static private final boolean doAnalysis = true;
 	
 	
 	public static boolean isdoAnalysis() {
