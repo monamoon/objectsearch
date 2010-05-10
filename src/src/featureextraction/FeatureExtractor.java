@@ -115,31 +115,42 @@ public class FeatureExtractor {
     }
 	public void addCornerVector(BufferedImage bi) throws InterruptedException
 	{
-
-		
-		int []orig=new int[bi.getWidth()* bi.getHeight()];
-		PixelGrabber grabber = new PixelGrabber(bi, 0, 0, bi.getWidth(),  bi.getHeight(), orig, 0, bi.getWidth());
+		int width = bi.getWidth();
+		int height = bi.getHeight();
+		int []orig=new int[width*height];
+		PixelGrabber grabber = new PixelGrabber(bi, 0, 0, width, height, orig, 0, width);
 		grabber.grabPixels();
 	
 		Corners harrisObj = new Corners();
-		harrisObj.init(orig,bi.getWidth(), bi.getHeight(), 0.04);
+		harrisObj.init(orig,width,height, 0.15);
 		orig=harrisObj.process();
 		
-
 		int sw = ImageProcessingConstants.getInputwidth();
 		int sh = ImageProcessingConstants.getInputheight();
-		for (int i=0;i<sw*sh;i++)
-			dataFile.add(0.0);
+		int [] data = new int[sw*sh];
 		
-		for(int i=0;i<bi.getWidth();i++)
+		for (int x=0;x<sw*sh;x++)
+			data[x] = 0;
+		
+		for(int i=0;i<width;i++)
 		{
-			for(int j=0;j<bi.getHeight();j++)
+			for(int j=0;j<height;j++)
 			{
-				if(orig[i*bi.getWidth()+j]>0)
-					dataFile.set(i + j/sh, dataFile.get(i + j/sh)+1);
-			}			
+				if(orig[i*width+j]!=0)
+				{
+					int index = (i*sw+j)/10;
+					if(index < sh*sw)
+						data[index]=data[index]+1;
+				}
+			}
 		}
-
+				
+					
+					
+		
+		for (int x=0;x<sw*sh;x++)
+			dataFile.add((double)data[x]);
+	
 	}
 	public void getFullBitmap(BufferedImage bi) throws InterruptedException 
 	{
