@@ -53,8 +53,8 @@ public class ImageProcessorTest {
 			initAnalysis(dumpPath);
 			runImageAnalysis(repository,dumpPath);
 		}
-		
-		createDataset(dumpPath);
+		else
+			createDataset(dumpPath+"\\");
 		
 	}
 	public static BufferedImage cleanupImage(BufferedImage bi) throws IOException
