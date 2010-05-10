@@ -132,7 +132,7 @@ public class Circles {
 			//System.out.println("top "+accSize+" matches:");
 			for(int i=accSize-1; i>=0; i--){
 				progress+=ratio;			
-				//drawCircle(results[i*3], results[i*3+1], results[i*3+2]);
+				drawCircle(results[i*3], results[i*3+1], results[i*3+2]);
 			}
 			return output;
 		}

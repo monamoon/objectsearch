@@ -31,7 +31,7 @@ public class hystThresh {
 					int value = (input[y*width+x]) & 0xff; 
 					if (value >= upper) {
 						input[y*width+x] = 0xffffffff;
-						hystConnect(x, y);
+						hystConnect(x, y, 0);
 					}
 				}
 			}
@@ -46,8 +46,10 @@ public class hystThresh {
 			}
 			return output;
 		}
-		private void hystConnect(int x, int y) {
+		private void hystConnect(int x, int y, int iter) {
 			int value = 0;
+			if(iter > 50)
+				return;
 			for (int x1=x-1;x1<=x+1;x1++) {
 				for (int y1=y-1;y1<=y+1;y1++) {
 					if ((x1 < width) & (y1 < height) & (x1 >= 0) & (y1 >= 0) & (x1 != x) & (y1 != y)) {
@@ -55,7 +57,7 @@ public class hystThresh {
 						if (value != 255) {
 							if (value >= lower) {
 								input[y1*width+x1] = 0xffffffff;
-								hystConnect(x1, y1);
+								hystConnect(x1, y1, ++iter);
 							} 
 							else {
 								input[y1*width+x1] = 0xff000000;
