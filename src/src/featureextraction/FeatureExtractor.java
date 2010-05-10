@@ -68,9 +68,9 @@ public class FeatureExtractor {
 		nonmaxObject.init(orig,direction,width,height);
 		orig = nonmaxObject.process();
 	
-//		hystThresh hystThreshObject = new hystThresh();
-//		hystThreshObject.init(orig,width,height, 25,50);
-//		orig = hystThreshObject.process();
+		hystThresh hystThreshObject = new hystThresh();
+		hystThreshObject.init(orig,width,height, 25,50);
+		orig = hystThreshObject.process();
 		
 		Lines lines = new Lines();
 		lines.init(orig, width, height);
@@ -103,9 +103,9 @@ public class FeatureExtractor {
 		nonmaxObject.init(orig,direction,width,height);
 		orig = nonmaxObject.process();
 	
-//		hystThresh hystThreshObject = new hystThresh();
-//		hystThreshObject.init(orig,width,height, 25,50);
-//		orig = hystThreshObject.process();
+		hystThresh hystThreshObject = new hystThresh();
+		hystThreshObject.init(orig,width,height, 25,50);
+		orig = hystThreshObject.process();
 		
 		Circles circles = new Circles();
 		circles.init(orig, width, height,radius);
