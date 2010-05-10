@@ -155,58 +155,7 @@ public class ImageProcessor {
 			return null;
 		}
 	}
-	public BufferedImage getCircleImage(BufferedImage bi) throws InterruptedException
-	{
-		int width = bi.getWidth();
-		int height = bi.getHeight();
-		int []orig=new int[width*height];
-		PixelGrabber grabber = new PixelGrabber(bi, 0, 0, width, height, orig, 0, width);
-		grabber.grabPixels();
-		
-		sobel sobelObject = new sobel();
-		sobelObject.init(orig,width,height);
-		orig = sobelObject.process();
-		
-		double direction[] = new double[width*height];
-		direction=sobelObject.getDirection();
-		
-		nonMaxSuppression nonmaxObject = new nonMaxSuppression();
-		nonmaxObject.init(orig,direction,width,height);
-		orig = nonmaxObject.process();
 	
-		hystThresh hystThreshObject = new hystThresh();
-		hystThreshObject.init(orig,width,height, 25,50);
-		orig = hystThreshObject.process();
-		
-		Circles circles = new Circles();
-		circles.init(orig, width, height,30 );
-		orig = circles.process();
-		
-		BufferedImage circleImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		Image piximg = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(width, height, orig,0,width));
-		circleImage.getGraphics().drawImage(piximg, 0, 0, null);
-		return circleImage; 
-		
-    }
-	public BufferedImage getCornerImage(BufferedImage bi) throws InterruptedException
-	{
-		int width = bi.getWidth();
-		int height = bi.getHeight();
-		int []orig=new int[width*height];
-		PixelGrabber grabber = new PixelGrabber(bi, 0, 0, width, height, orig, 0, width);
-		grabber.grabPixels();
-	
-		Corners harrisObj = new Corners();
-		harrisObj.init(orig,width, height, 0.14);
-		orig=harrisObj.process();
-
-		BufferedImage cornerImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		Image piximg = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(width, height, orig,0,width));
-		cornerImage.getGraphics().drawImage(piximg, 0, 0, null);
-		return cornerImage; 
-	
-}
-
 	public Vector<BufferedImage> getSegments(BufferedImage normalbi, BufferedImage segBi) throws IOException
 	{
 		Vector<Segment> segments = new Vector<Segment>();
