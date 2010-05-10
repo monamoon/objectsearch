@@ -57,6 +57,7 @@ public class ImageProcessorTest {
 			createDataset(dumpPath+"\\");
 		
 	}
+	
 	public static BufferedImage cleanupImage(BufferedImage bi) throws IOException
 	{
 		ImageProcessor ip = new ImageProcessor();
@@ -105,7 +106,7 @@ public class ImageProcessorTest {
 	{
 		String posFolder = dumpPath+"positive\\"+type;
 		String negFolder = dumpPath+"negative\\"+type;
-		String dataFile = dumpPath+type+ft+".arff";
+		String dataFile = dumpPath+ft+type+".arff";
 		new File(dataFile).delete();
 		
 		BufferedWriter dataBuff =  new BufferedWriter(new FileWriter(dataFile,true));
@@ -155,6 +156,13 @@ public class ImageProcessorTest {
 			dataBuff.close();
 		}
 	}
+	
+	/**
+	 * 
+	 * @param dir
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static void clusterObjects(String dir) throws IOException, InterruptedException
 	{
 		Vector<Vector<Double>> data = new Vector<Vector<Double>>();	
@@ -164,7 +172,7 @@ public class ImageProcessorTest {
 			if(!(new File(fileName)).exists())
 				continue;
 			BufferedImage readImage = ImageIO.read(new File(fileName));
-			data.add(FeatureExtractor.getFeatureVector(readImage, k, FeatureType.FULLBITMAP));
+			data.add(FeatureExtractor.getFeatureVector(readImage, k, FeatureType.fullbitmap));
 		}
 		for(int k=1;k<100;k++)
 		{
@@ -172,7 +180,7 @@ public class ImageProcessorTest {
 			if(!(new File(fileName)).exists())
 				continue;
 			BufferedImage readImage = ImageIO.read(new File(fileName));
-			data.add(FeatureExtractor.getFeatureVector(readImage, -k, FeatureType.FULLBITMAP));	
+			data.add(FeatureExtractor.getFeatureVector(readImage, -k, FeatureType.fullbitmap));	
 		}
 		for(int k=1;k<100;k++)
 		{
@@ -180,7 +188,7 @@ public class ImageProcessorTest {
 			if(!(new File(fileName)).exists())
 				continue;
 			BufferedImage readImage = ImageIO.read(new File(fileName));
-			data.add(FeatureExtractor.getFeatureVector(readImage, k, FeatureType.FULLBITMAP));	
+			data.add(FeatureExtractor.getFeatureVector(readImage, k, FeatureType.fullbitmap));	
 		}
 		for(int k=1;k<100;k++)
 		{
@@ -188,7 +196,7 @@ public class ImageProcessorTest {
 			if(!(new File(fileName)).exists())
 				continue;
 			BufferedImage readImage = ImageIO.read(new File(fileName));
-			data.add(FeatureExtractor.getFeatureVector(readImage, -k, FeatureType.FULLBITMAP));
+			data.add(FeatureExtractor.getFeatureVector(readImage, -k, FeatureType.fullbitmap));
 		}
 		System.out.println("Output size: "+data.size());
 		ImageSom som = new ImageSom(data);
