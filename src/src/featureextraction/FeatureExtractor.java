@@ -33,11 +33,26 @@ public class FeatureExtractor {
 				fe.addLineVector(bi);
 				break;
 				
+			case histogram:
+				fe.addHistogramVector(bi);
+				break;
+				
 			case curves:
 				fe.addCircleVector(bi,10);
 				fe.addCircleVector(bi,20);
 				fe.addCircleVector(bi,30);
 				break;
+			
+			case all:
+				fe.getFullBitmap(bi);
+				fe.addCornerVector(bi);
+				fe.addLineVector(bi);
+				fe.addCircleVector(bi,10);
+				fe.addCircleVector(bi,20);
+				fe.addCircleVector(bi,30);
+				
+				break;
+			
 		}
 		for(double current : fe.dataFile){
 			if(current != 0.0)
@@ -48,6 +63,40 @@ public class FeatureExtractor {
 			return fe.dataFile;
 		}
 		return null;
+	}
+	public void addHistogramVector(BufferedImage bi) throws InterruptedException
+	{
+		int [] hist = new int[256];
+		for(int i=0;i<=255;i++)
+			hist[i]=0;
+		
+		for(int i=0;i<bi.getWidth();i++)
+		{
+			for(int j=0;j<bi.getHeight();j++)
+			{
+				try
+				{
+					int rgb = bi.getRGB(i, j);
+					if(rgb == Color.BLACK.getRGB())
+						continue;
+					int color = 0;
+					if (rgb<0)
+						color = (-rgb)%256;
+					else 
+						color = (rgb)%256;
+					hist[color]=hist[color]+1;
+				}
+				catch(Exception e)
+				{
+					continue;
+				}
+				
+				
+			}
+		}
+		
+		for(int i=0;i<=255;i++)
+			dataFile.add((double)hist[i]);
 	}
 	public void addLineVector(BufferedImage bi) throws InterruptedException
 	{
@@ -125,8 +174,8 @@ public class FeatureExtractor {
 		harrisObj.init(orig,width,height, 0.15);
 		orig=harrisObj.process();
 		
-		int sw = ImageProcessingConstants.getInputwidth();
-		int sh = ImageProcessingConstants.getInputheight();
+		int sw = 10;
+		int sh = 8;
 		int [] data = new int[sw*sh];
 		
 		for (int x=0;x<sw*sh;x++)
@@ -136,9 +185,9 @@ public class FeatureExtractor {
 		{
 			for(int j=0;j<height;j++)
 			{
-				if(orig[i*width+j]!=0)
+				if(orig[i*height+j]!=0)
 				{
-					int index = (i*sw+j)/10;
+					int index = (i/100*sh)+j/100;
 					if(index < sh*sw)
 						data[index]=data[index]+1;
 				}

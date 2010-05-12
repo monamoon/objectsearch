@@ -85,7 +85,6 @@ public class Corners {
 					
 				}				
 			}
-
 			// do non-max suppression on the hcr
 			nonmax nmOp = new nonmax();
 			nmOp.init(hcr, width, height);
@@ -94,16 +93,8 @@ public class Corners {
 			for(int x = 0; x < width; x++) {
 				progress++;
 				for(int y = 0 ; y < height; y++) {
-//					if((nm[y * width + x]) == 0) val = ((input[y * width + x]&0xff) + 255) / 2;//hcr[y * width + x];//&0xff;
-//					else {
-//						//System.out.println("Got value " + (nm[y * width + x]&0xff));
-//						val = 0;
-//						
-//					}
-//					//val = hcr[y * width + x];
-//					output[y * width + x] = 0xff000000 | ((int)(val) << 16 | (int)(val) << 8 | (int)(val));
 					if((nm[y * width + x]) == 0)
-						output[y * width + x] = 0; 
+						output[y * width + x] = 0;
 					else
 						output[y * width + x] = 0xffffffff;
 				}				

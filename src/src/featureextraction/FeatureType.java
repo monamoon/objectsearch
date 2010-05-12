@@ -4,5 +4,7 @@ public enum FeatureType {
 	fullbitmap,
 	corners,
 	lines,
-	curves
+	curves,
+	histogram,
+	all
 }
